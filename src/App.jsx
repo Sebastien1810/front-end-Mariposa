@@ -1,20 +1,20 @@
-import { useState } from "react";
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import React from "react";
 import SignupPage from "./pages/SignupPage";
 import LoginPage from "./pages/LoginPage";
 import IsPrivate from "./components/IsPrivate";
 import IsAnon from "./components/IsAnon";
-
-import "./App.css";
 import GymsessionPage from "./pages/GymsessionPage";
+import Homepage from "./pages/Homepage";
+import "./App.css";
 
 function App() {
   return (
     <>
-      <Navbar />;
+      <Navbar />
       <Routes>
+        <Route path="/" element={<Homepage />} />
         <Route
           path="/signup"
           element={
@@ -32,7 +32,7 @@ function App() {
           }
         />
         <Route
-          path="/GymsessionPage"
+          path="/gymsession"
           element={
             <IsPrivate>
               <GymsessionPage />

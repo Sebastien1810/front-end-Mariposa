@@ -9,22 +9,21 @@ function Navbar() {
   return (
     <nav>
       <Link to="/">
-        <Button variant="text">Home</Button>
+        <Button variant="contained">Home</Button>
       </Link>
       {isLoggedIn && (
         <>
-          <Link to="/GymsessionPage.jsx"></Link>
+          <Link to="/gymsession"></Link>
           <button onClick={logOutUser}>Logout</button>
-          <span>{user}</span>
         </>
       )}
       {!isLoggedIn && (
         <>
           <Link to="/signup">
-            <button>Sign up</button>
+            <button>Sign up page</button>
           </Link>
           <Link to="/login">
-            <button>Login</button>
+            <button>Login page</button>
           </Link>
         </>
       )}
