@@ -13,8 +13,10 @@ function Navbar() {
       </Link>
       {isLoggedIn && (
         <>
-          <Link to="/gymsession"></Link>
           <button onClick={logOutUser}>Logout</button>
+          <Link to="/gymSession">
+            <Button variant="contained">Gymsession</Button>
+          </Link>
         </>
       )}
       {!isLoggedIn && (
@@ -27,8 +29,9 @@ function Navbar() {
           </Link>
         </>
       )}
-
-      <Button variant="contained">Contained</Button>
+      <Link to="/Profil">
+        <Button variant="contained">profil</Button>
+      </Link>
       <Button variant="outlined">Outlined</Button>
     </nav>
   );

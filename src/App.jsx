@@ -7,6 +7,7 @@ import IsPrivate from "./components/IsPrivate";
 import IsAnon from "./components/IsAnon";
 import GymsessionPage from "./pages/GymsessionPage";
 import Homepage from "./pages/Homepage";
+import ProfilPage from "./pages/ProfilPage";
 import "./App.css";
 
 function App() {
@@ -29,6 +30,14 @@ function App() {
             <IsAnon>
               <LoginPage />
             </IsAnon>
+          }
+        />
+        <Route
+          path="/profil"
+          element={
+            <IsPrivate>
+              <ProfilPage />
+            </IsPrivate>
           }
         />
         <Route

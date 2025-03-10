@@ -27,8 +27,8 @@ function SignupPage(props) {
         navigate("/login");
       })
       .catch((error) => {
-        const errorDescription = error.response.data.message;
-        setErrorMessage(errorDescription);
+        console.log(error);
+        setErrorMessage(error.message);
       });
   };
 
@@ -55,7 +55,8 @@ function SignupPage(props) {
 
       {errorMessage && <p className="error-message">{errorMessage}</p>}
 
-      <p>Already have account?</p>
+      <p>You probably already have account?</p>
+      <p>go login!</p>
       <Link to={"/login"}> Login</Link>
     </div>
   );
