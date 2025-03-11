@@ -1,13 +1,57 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { AuthContext } from "../context/auth.context";
 
 const API_URL = "http://localhost:5005";
 
-function GymsessionPage() {
-  const [sessions, setSessions] = useState([]);
+function GymSessionPage() {
+  // States for the creation form fields
   const [location, setLocation] = useState("");
   const [typeOfWorkout, setTypeOfWorkout] = useState("");
+  const [favoriteTime, setFavoriteTime] = useState("");
 
+  // State to store existing sessions
+  const [sessions, setSessions] = useState([]);
+
+  // States for editing a session
+  const [editingSessionId, setEditingSessionId] = useState(null);
+  const [editLocation, setEditLocation] = useState("");
+  const [editTypeOfWorkout, setEditTypeOfWorkout] = useState("");
+  const [editFavoriteTime, setEditFavoriteTime] = useState("");
+
+  // Get the logged in user and login status from the auth context
+  const { user, isLoggedIn } = useContext(AuthContext);
+
+  // Options for the type of workout (corresponding to your schema)
+  const workoutOptions = [
+    "Treadmill (Intervals, Incline Walking, Endurance Run)",
+    "Elliptical (Steady State, Interval Training)",
+    "Stationary Bike (Spin Class, Steady Pedal)",
+    "Rowing Machine (Interval Rowing, Continuous Endurance)",
+    "Stair Climber (Consistent Pace, HIIT)",
+    "HIIT Classes (Burpees, Jumping Jacks, Sprints)",
+    "Free Weight Training (Bench Press, Squats, Deadlifts, Overhead Press)",
+    "Machine Workouts (Leg Press, Chest Press, Lat Pulldown)",
+    "Kettlebell Workouts (Swings, Cleans, Goblet Squats)",
+    "Bodyweight Circuits (Push-ups, Pull-ups, Dips, Lunges, Planks)",
+    "TRX Suspension Training (Suspension Exercises, Core Strengthening)",
+    "Resistance Band Sessions (Band Rows, Curls, Leg Workouts)",
+    "Yoga Classes (Hatha, Vinyasa)",
+    "Pilates Classes (Core Strengthening, Stretching)",
+    "Dynamic Stretching (Movement-Based Warm-Up)",
+    "Static Stretching (Cool-Down Routines, Major Muscle Groups)",
+    "Foam Rolling/Mobility (Self-Myofascial Release, Mobility Exercises)",
+    "Stability Ball Workouts (Ball Squats, Planks, Core Drills)",
+    "BOSU Ball Training (Squats, Push-ups, Lunges)",
+    "Balance Board Exercises (Single-Leg Balance, Proprioception Drills)",
+    "Single-Leg Drills (Unilateral Strength, Stability Exercises)",
+    "Agility Ladder Drills (Quick Feet, Coordination Exercises)",
+  ];
+
+  // Options for the favorite workout time
+  const timeOptions = ["morning", "afternoon", "evening"];
+
+  // Load existing sessions when the component mounts
   useEffect(() => {
     axios
       .get(`${API_URL}/api/gymSessions`)
@@ -15,24 +59,77 @@ function GymsessionPage() {
       .catch((error) => console.error("Error fetching sessions:", error));
   }, []);
 
+  // Handle form submission to create a new session
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newSession = { location, typeOfWorkout };
+    // Prepare the object to send with the form fields and creator id
+    const newSession = {
+      location,
+      typeOfWorkout,
+      favoriteTimeforWorkout: favoriteTime,
+      creator: user ? user._id : null,
+    };
+
     axios
       .post(`${API_URL}/api/gymSessions`, newSession)
       .then(() => {
+        // Reset the creation form fields
         setLocation("");
         setTypeOfWorkout("");
-        return axios.get("/api/gymSessions");
+        setFavoriteTime("");
+        // Refresh the sessions list from the backend
+        return axios.get(`${API_URL}/api/gymSessions`);
       })
       .then((response) => setSessions(response.data))
       .catch((error) => console.error("Error creating session:", error));
   };
 
+  // Handle deletion of a session
+  const handleDelete = (sessionId) => {
+    axios
+      .delete(`${API_URL}/api/gymSessions/${sessionId}`)
+      .then(() => {
+        // Update state by removing the deleted session
+        setSessions(sessions.filter((session) => session._id !== sessionId));
+      })
+      .catch((error) => console.error("Error deleting session:", error));
+  };
+
+  // Start editing a session: prefill the edit form with the session data
+  const startEditing = (session) => {
+    setEditingSessionId(session._id);
+    setEditLocation(session.location);
+    setEditTypeOfWorkout(session.typeOfWorkout);
+    setEditFavoriteTime(session.favoriteTimeforWorkout);
+  };
+
+  // Handle the submission of the edit form
+  const handleEditSubmit = (e, sessionId) => {
+    e.preventDefault();
+    const updatedData = {
+      location: editLocation,
+      typeOfWorkout: editTypeOfWorkout,
+      favoriteTimeforWorkout: editFavoriteTime,
+    };
+
+    axios
+      .put(`${API_URL}/api/gymSessions/${sessionId}`, updatedData)
+      .then((response) => {
+        setSessions((prevSessions) =>
+          prevSessions.map((session) =>
+            session._id === sessionId ? response.data : session
+          )
+        );
+        setEditingSessionId(null); // Close the edit mode
+      })
+      .catch((error) => console.error("Error updating session:", error));
+  };
+
   return (
     <div>
-      <h1>Create a New Session</h1>
+      <h1>Create a New Gym Session</h1>
       <form onSubmit={handleSubmit}>
+        {/* Field for location */}
         <div>
           <label>Location:</label>
           <input
@@ -42,20 +139,36 @@ function GymsessionPage() {
             required
           />
         </div>
+        {/* Field for type of workout */}
         <div>
-          <label>Workout Type:</label>
+          <label>Type of Workout:</label>
           <select
             value={typeOfWorkout}
             onChange={(e) => setTypeOfWorkout(e.target.value)}
             required
           >
-            <option value="">--Select a Type--</option>
-            <option value="Treadmill (Intervals, Incline Walking, Endurance Run)">
-              Treadmill (Intervals, Incline Walking, Endurance Run)
-            </option>
-            <option value="Elliptical (Steady State, Interval Training)">
-              Elliptical (Steady State, Interval Training)
-            </option>
+            <option value="">--Select a type--</option>
+            {workoutOptions.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+        {/* Field for favorite workout time */}
+        <div>
+          <label>Favorite Time for Workout:</label>
+          <select
+            value={favoriteTime}
+            onChange={(e) => setFavoriteTime(e.target.value)}
+            required
+          >
+            <option value="">--Select a time--</option>
+            {timeOptions.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
           </select>
         </div>
         <button type="submit">Create Session</button>
@@ -65,6 +178,68 @@ function GymsessionPage() {
         {sessions.map((session) => (
           <li key={session._id}>
             <strong>{session.location}</strong> - {session.typeOfWorkout}
+            {/* Show Edit and Delete buttons only if the logged in user is the creator */}
+            {isLoggedIn && user && user._id === session.creator && (
+              <>
+                {editingSessionId === session._id ? (
+                  <form onSubmit={(e) => handleEditSubmit(e, session._id)}>
+                    <div>
+                      <label>Location:</label>
+                      <input
+                        type="text"
+                        value={editLocation}
+                        onChange={(e) => setEditLocation(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label>Type of Workout:</label>
+                      <select
+                        value={editTypeOfWorkout}
+                        onChange={(e) => setEditTypeOfWorkout(e.target.value)}
+                        required
+                      >
+                        <option value="">--Select a type--</option>
+                        {workoutOptions.map((option, index) => (
+                          <option key={index} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label>Favorite Time for Workout:</label>
+                      <select
+                        value={editFavoriteTime}
+                        onChange={(e) => setEditFavoriteTime(e.target.value)}
+                        required
+                      >
+                        <option value="">--Select a time--</option>
+                        {timeOptions.map((option, index) => (
+                          <option key={index} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <button type="submit">Save</button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingSessionId(null)}
+                    >
+                      Cancel
+                    </button>
+                  </form>
+                ) : (
+                  <>
+                    <button onClick={() => startEditing(session)}>Edit</button>
+                    <button onClick={() => handleDelete(session._id)}>
+                      Delete
+                    </button>
+                  </>
+                )}
+              </>
+            )}
           </li>
         ))}
       </ul>
@@ -72,4 +247,4 @@ function GymsessionPage() {
   );
 }
 
-export default GymsessionPage;
+export default GymSessionPage;
