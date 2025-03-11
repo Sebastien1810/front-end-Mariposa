@@ -73,7 +73,6 @@ function GymSessionPage() {
     axios
       .post(`${API_URL}/api/gymSessions`, newSession)
       .then(() => {
-        // Reset the creation form fields
         setLocation("");
         setTypeOfWorkout("");
         setFavoriteTime("");
@@ -84,7 +83,6 @@ function GymSessionPage() {
       .catch((error) => console.error("Error creating session:", error));
   };
 
-  // Handle deletion of a session
   const handleDelete = (sessionId) => {
     axios
       .delete(`${API_URL}/api/gymSessions/${sessionId}`)
@@ -95,7 +93,6 @@ function GymSessionPage() {
       .catch((error) => console.error("Error deleting session:", error));
   };
 
-  // Start editing a session: prefill the edit form with the session data
   const startEditing = (session) => {
     setEditingSessionId(session._id);
     setEditLocation(session.location);
@@ -103,7 +100,6 @@ function GymSessionPage() {
     setEditFavoriteTime(session.favoriteTimeforWorkout);
   };
 
-  // Handle the submission of the edit form
   const handleEditSubmit = (e, sessionId) => {
     e.preventDefault();
     const updatedData = {
@@ -120,7 +116,7 @@ function GymSessionPage() {
             session._id === sessionId ? response.data : session
           )
         );
-        setEditingSessionId(null); // Close the edit mode
+        setEditingSessionId(null);
       })
       .catch((error) => console.error("Error updating session:", error));
   };
@@ -129,7 +125,6 @@ function GymSessionPage() {
     <div>
       <h1>Create a New Gym Session</h1>
       <form onSubmit={handleSubmit}>
-        {/* Field for location */}
         <div>
           <label>Location:</label>
           <input
@@ -139,7 +134,7 @@ function GymSessionPage() {
             required
           />
         </div>
-        {/* Field for type of workout */}
+
         <div>
           <label>Type of Workout:</label>
           <select
@@ -155,7 +150,7 @@ function GymSessionPage() {
             ))}
           </select>
         </div>
-        {/* Field for favorite workout time */}
+
         <div>
           <label>Favorite Time for Workout:</label>
           <select

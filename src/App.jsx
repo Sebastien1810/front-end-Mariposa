@@ -8,6 +8,7 @@ import IsAnon from "./components/IsAnon";
 import GymsessionPage from "./pages/GymsessionPage";
 import Homepage from "./pages/Homepage";
 import ProfilPage from "./pages/ProfilPage";
+import CommentsSection from "./pages/CommentsSection";
 import "./App.css";
 
 function App() {
@@ -45,6 +46,14 @@ function App() {
           element={
             <IsPrivate>
               <GymsessionPage />
+            </IsPrivate>
+          }
+        />
+        <Route
+          path="/CommentPage"
+          element={
+            <IsPrivate>
+              <CommentsSection />
             </IsPrivate>
           }
         />

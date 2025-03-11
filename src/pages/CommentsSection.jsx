@@ -1,12 +1,13 @@
-// pages/ProfilPage.jsx
+// pages/CommentsSection.jsx
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/auth.context";
 
 const API_URL = "http://localhost:5005/api";
 
-function ProfilPage() {
-  const { user } = useContext(AuthContext);
+function CommentsSection() {
+  const { user: currentUser } = useContext(AuthContext);
+
   const [sessions, setSessions] = useState([]);
   const [comments, setComments] = useState([]);
   const [newCommentTexts, setNewCommentTexts] = useState({});
@@ -14,20 +15,11 @@ function ProfilPage() {
   const [editingCommentText, setEditingCommentText] = useState("");
 
   useEffect(() => {
-    if (user) {
-      axios
-        .get(`${API_URL}/gymSessions`)
-        .then((response) => {
-          const userSessions = response.data.filter(
-            (session) => session.creator === user._id
-          );
-          setSessions(userSessions);
-        })
-        .catch((error) =>
-          console.error("Error fetching user sessions:", error)
-        );
-    }
-  }, [user]);
+    axios
+      .get(`${API_URL}/gymSessions`)
+      .then((response) => setSessions(response.data))
+      .catch((error) => console.error("Error fetching sessions:", error));
+  }, []);
 
   useEffect(() => {
     axios
@@ -42,10 +34,16 @@ function ProfilPage() {
 
   const handleCreateComment = (e, sessionId) => {
     e.preventDefault();
+
+    if (!currentUser) {
+      console.error("User not authenticated");
+      return;
+    }
+
     const commentData = {
       content: newCommentTexts[sessionId],
       gymSession: sessionId,
-      createdBy: user._id,
+      createdBy: currentUser._id,
     };
 
     axios
@@ -93,8 +91,7 @@ function ProfilPage() {
 
   return (
     <div>
-      <h2>Your Sessions and Their Comments</h2>
-      {sessions.length === 0 && <p>No sessions created by you.</p>}
+      <h2>All Sessions and Their Comments</h2>
       {sessions.map((session) => (
         <div
           key={session._id}
@@ -110,7 +107,6 @@ function ProfilPage() {
           <h4>Comments:</h4>
           <ul>
             {comments
-
               .filter(
                 (comment) =>
                   comment.gymSession && comment.gymSession._id === session._id
@@ -135,9 +131,8 @@ function ProfilPage() {
                     </form>
                   ) : (
                     <>
-                      {/* Afficher le texte depuis "commentContent" */}
                       <span>{comment.commentContent}</span>
-                      {user && user._id === comment.createdBy && (
+                      {currentUser && currentUser._id === comment.createdBy && (
                         <>
                           <button
                             onClick={() =>
@@ -179,4 +174,4 @@ function ProfilPage() {
   );
 }
 
-export default ProfilPage;
+export default CommentsSection;

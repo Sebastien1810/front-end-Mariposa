@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import Button from "@mui/material/Button";
 import { AuthContext } from "../context/auth.context";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
 
 function Navbar() {
-  const { isLoggedIn, user, logOutUser } = useContext(AuthContext);
+  const { isLoggedIn, logOutUser } = useContext(AuthContext);
   return (
     <nav>
       <Link to="/">
@@ -14,8 +13,11 @@ function Navbar() {
       {isLoggedIn && (
         <>
           <button onClick={logOutUser}>Logout</button>
-          <Link to="/gymSession">
+          <Link to="/gymsession">
             <Button variant="contained">Gymsession</Button>
+          </Link>
+          <Link to="/CommentPage">
+            <Button variant="contained">Comment Section</Button>
           </Link>
         </>
       )}
@@ -29,11 +31,11 @@ function Navbar() {
           </Link>
         </>
       )}
-      <Link to="/Profil">
-        <Button variant="contained">profil</Button>
+      <Link to="/profil">
+        <Button variant="contained">Profil</Button>
       </Link>
-      <Button variant="outlined">Outlined</Button>
     </nav>
   );
 }
+
 export default Navbar;
