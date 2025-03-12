@@ -10,6 +10,7 @@ import Homepage from "./pages/Homepage";
 import ProfilPage from "./pages/ProfilPage";
 import CommentsSection from "./pages/CommentsSection";
 import "./App.css";
+import MateFinderPage from "./pages/MateFinderPage";
 
 function App() {
   return (
@@ -54,6 +55,14 @@ function App() {
           element={
             <IsPrivate>
               <CommentsSection />
+            </IsPrivate>
+          }
+        />
+        <Route
+          path="/matefinder"
+          element={
+            <IsPrivate>
+              <MateFinderPage />
             </IsPrivate>
           }
         />

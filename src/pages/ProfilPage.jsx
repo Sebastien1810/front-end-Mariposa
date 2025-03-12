@@ -13,6 +13,7 @@ function ProfilPage() {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
 
+  // Récupération des sessions de l'utilisateur
   useEffect(() => {
     if (user) {
       axios
@@ -29,6 +30,7 @@ function ProfilPage() {
     }
   }, [user]);
 
+  // Récupération de tous les commentaires
   useEffect(() => {
     axios
       .get(`${API_URL}/comments`)
@@ -91,8 +93,54 @@ function ProfilPage() {
       .catch((error) => console.error("Error updating comment:", error));
   };
 
+  // Définition des listes d'options pour les menus déroulants
+  const levels = ["beginner", "intermediate", "expert"];
+  const favoriteTimes = ["morning", "afternoon", "evening"];
+  const gymSessionOptions = [
+    "Treadmill (Intervals, Incline Walking, Endurance Run)",
+    "Elliptical (Steady State, Interval Training)",
+    "Stationary Bike (Spin Class, Steady Pedal)",
+    "Rowing Machine (Interval Rowing, Continuous Endurance)",
+    "Stair Climber (Consistent Pace, HIIT)",
+    "HIIT Classes (Burpees, Jumping Jacks, Sprints)",
+    "Free Weight Training (Bench Press, Squats, Deadlifts, Overhead Press)",
+    "Machine Workouts (Leg Press, Chest Press, Lat Pulldown)",
+    "Kettlebell Workouts (Swings, Cleans, Goblet Squats)",
+    "Bodyweight Circuits (Push-ups, Pull-ups, Dips, Lunges, Planks)",
+    "TRX Suspension Training (Suspension Exercises, Core Strengthening)",
+    "Resistance Band Sessions (Band Rows, Curls, Leg Workouts)",
+    "Yoga Classes (Hatha, Vinyasa)",
+    "Pilates Classes (Core Strengthening, Stretching)",
+    "Dynamic Stretching (Movement-Based Warm-Up)",
+    "Static Stretching (Cool-Down Routines, Major Muscle Groups)",
+    "Foam Rolling/Mobility (Self-Myofascial Release, Mobility Exercises)",
+    "Stability Ball Workouts (Ball Squats, Planks, Core Drills)",
+    "BOSU Ball Training (Squats, Push-ups, Lunges)",
+    "Balance Board Exercises (Single-Leg Balance, Proprioception Drills)",
+    "Single-Leg Drills (Unilateral Strength, Stability Exercises)",
+    "Agility Ladder Drills (Quick Feet, Coordination Exercises)",
+  ];
+
+  // États pour stocker les sélections de l'utilisateur pour le matefinder
+  const [selectedLevel, setSelectedLevel] = useState("");
+  const [selectedTime, setSelectedTime] = useState("");
+  const [selectedGymSession, setSelectedGymSession] = useState("");
+
+  const handleMatefinderSubmit = (e) => {
+    e.preventDefault();
+    console.log("Matefinder Preferences:", {
+      level: selectedLevel,
+      time: selectedTime,
+      gymSession: selectedGymSession,
+    });
+    localStorage.setItem("level", selectedLevel);
+    localStorage.setItem("favoriteTime", selectedTime);
+    localStorage.setItem("gymSessionPreference", selectedGymSession);
+    alert("Preferences saved locally!");
+  };
+
   return (
-    <div>
+    <div style={{ padding: "20px" }}>
       <h2>Your Sessions and Their Comments</h2>
       {sessions.length === 0 && <p>No sessions created by you.</p>}
       {sessions.map((session) => (
@@ -110,7 +158,6 @@ function ProfilPage() {
           <h4>Comments:</h4>
           <ul>
             {comments
-
               .filter(
                 (comment) =>
                   comment.gymSession && comment.gymSession._id === session._id
@@ -135,27 +182,28 @@ function ProfilPage() {
                     </form>
                   ) : (
                     <>
-                      {/* Afficher le texte depuis "commentContent" */}
                       <span>{comment.commentContent}</span>
-                      {user && user._id === comment.createdBy && (
-                        <>
-                          <button
-                            onClick={() =>
-                              startEditingComment(
-                                comment._id,
-                                comment.commentContent
-                              )
-                            }
-                          >
-                            Edit
-                          </button>
-                          <button
-                            onClick={() => handleDeleteComment(comment._id)}
-                          >
-                            Delete
-                          </button>
-                        </>
-                      )}
+                      {user &&
+                        comment.user &&
+                        user._id === comment.user._id && (
+                          <>
+                            <button
+                              onClick={() =>
+                                startEditingComment(
+                                  comment._id,
+                                  comment.commentContent
+                                )
+                              }
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteComment(comment._id)}
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
                     </>
                   )}
                 </li>
@@ -175,6 +223,62 @@ function ProfilPage() {
           </form>
         </div>
       ))}
+
+      <hr />
+
+      {/* Formulaire pour les préférences matefinder */}
+      <h2>Matefinder Preferences</h2>
+      <form onSubmit={handleMatefinderSubmit}>
+        <div style={{ marginBottom: "10px" }}>
+          <label>
+            Niveau :{" "}
+            <select
+              value={selectedLevel}
+              onChange={(e) => setSelectedLevel(e.target.value)}
+            >
+              <option value="">-- Choisir un niveau --</option>
+              {levels.map((lvl) => (
+                <option key={lvl} value={lvl}>
+                  {lvl}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div style={{ marginBottom: "10px" }}>
+          <label>
+            Moment préféré :{" "}
+            <select
+              value={selectedTime}
+              onChange={(e) => setSelectedTime(e.target.value)}
+            >
+              <option value="">-- Choisir un moment --</option>
+              {favoriteTimes.map((time) => (
+                <option key={time} value={time}>
+                  {time}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div style={{ marginBottom: "10px" }}>
+          <label>
+            Type de séance :{" "}
+            <select
+              value={selectedGymSession}
+              onChange={(e) => setSelectedGymSession(e.target.value)}
+            >
+              <option value="">-- Choisir une séance --</option>
+              {gymSessionOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <button type="submit">Enregistrer</button>
+      </form>
     </div>
   );
 }

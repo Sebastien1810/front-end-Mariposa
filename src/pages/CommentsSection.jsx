@@ -132,7 +132,7 @@ function CommentsSection() {
                   ) : (
                     <>
                       <span>{comment.commentContent}</span>
-                      {currentUser && currentUser._id === comment.createdBy && (
+                      {currentUser && currentUser._id === comment.user && (
                         <>
                           <button
                             onClick={() =>

@@ -12,22 +12,27 @@ function Navbar() {
       </Link>
       {isLoggedIn && (
         <>
-          <button onClick={logOutUser}>Logout</button>
+          <Button onClick={logOutUser} variant="contained">
+            Logout
+          </Button>
           <Link to="/gymsession">
             <Button variant="contained">Gymsession</Button>
           </Link>
           <Link to="/CommentPage">
             <Button variant="contained">Comment Section</Button>
           </Link>
+          <Link to="/matefinder">
+            <Button variant="contained">Matefinder</Button>
+          </Link>
         </>
       )}
       {!isLoggedIn && (
         <>
           <Link to="/signup">
-            <button>Sign up page</button>
+            <Button variant="contained">Sign up page</Button>
           </Link>
           <Link to="/login">
-            <button>Login page</button>
+            <Button variant="contained">Login page</Button>
           </Link>
         </>
       )}
