@@ -3,8 +3,6 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/auth.context";
 
-const API_URL = "http://localhost:5005/api";
-
 function CommentsSection() {
   const { user: currentUser } = useContext(AuthContext);
 
@@ -16,14 +14,14 @@ function CommentsSection() {
 
   useEffect(() => {
     axios
-      .get(`${API_URL}/gymSessions`)
+      .get(`${import.meta.env.VITE_API_URL}/gymSessions`)
       .then((response) => setSessions(response.data))
       .catch((error) => console.error("Error fetching sessions:", error));
   }, []);
 
   useEffect(() => {
     axios
-      .get(`${API_URL}/comments`)
+      .get(`${import.meta.env.VITE_API_URL}/comments`)
       .then((response) => setComments(response.data))
       .catch((error) => console.error("Error fetching comments:", error));
   }, []);
@@ -47,7 +45,7 @@ function CommentsSection() {
     };
 
     axios
-      .post(`${API_URL}/Comment`, commentData)
+      .post(`${import.meta.env.VITE_API_URL}/Comment`, commentData)
       .then((response) => {
         setComments((prev) => [...prev, response.data]);
         setNewCommentTexts((prev) => ({ ...prev, [sessionId]: "" }));
@@ -57,7 +55,7 @@ function CommentsSection() {
 
   const handleDeleteComment = (commentId) => {
     axios
-      .delete(`${API_URL}/Comment/${commentId}`)
+      .delete(`${import.meta.env.VITE_API_URL}/Comment/${commentId}`)
       .then(() => {
         setComments((prev) =>
           prev.filter((comment) => comment._id !== commentId)
@@ -74,7 +72,7 @@ function CommentsSection() {
   const handleUpdateComment = (e, commentId) => {
     e.preventDefault();
     axios
-      .put(`${API_URL}/Comment/${commentId}`, {
+      .put(`${import.meta.env.VITE_API_URL}/Comment/${commentId}`, {
         commentContent: editingCommentText,
       })
       .then((response) => {

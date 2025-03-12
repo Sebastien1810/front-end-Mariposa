@@ -2,8 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/auth.context";
 
-const API_URL = "http://localhost:5005";
-
 function GymSessionPage() {
   // States for the creation form fields
   const [location, setLocation] = useState("");
@@ -54,7 +52,7 @@ function GymSessionPage() {
   // Load existing sessions when the component mounts
   useEffect(() => {
     axios
-      .get(`${API_URL}/api/gymSessions`)
+      .get(`${import.meta.env.VITE_API_URL}/gymSessions`)
       .then((response) => setSessions(response.data))
       .catch((error) => console.error("Error fetching sessions:", error));
   }, []);
@@ -71,13 +69,13 @@ function GymSessionPage() {
     };
 
     axios
-      .post(`${API_URL}/api/gymSessions`, newSession)
+      .post(`${import.meta.env.VITE_API_URL}/gymSessions`, newSession)
       .then(() => {
         setLocation("");
         setTypeOfWorkout("");
         setFavoriteTime("");
         // Refresh the sessions list from the backend
-        return axios.get(`${API_URL}/api/gymSessions`);
+        return axios.get(`${API_URL}/gymSessions`);
       })
       .then((response) => setSessions(response.data))
       .catch((error) => console.error("Error creating session:", error));
@@ -85,7 +83,7 @@ function GymSessionPage() {
 
   const handleDelete = (sessionId) => {
     axios
-      .delete(`${API_URL}/api/gymSessions/${sessionId}`)
+      .delete(`${import.meta.env.VITE_API_URL}/gymSessions/${sessionId}`)
       .then(() => {
         // Update state by removing the deleted session
         setSessions(sessions.filter((session) => session._id !== sessionId));
@@ -109,7 +107,10 @@ function GymSessionPage() {
     };
 
     axios
-      .put(`${API_URL}/api/gymSessions/${sessionId}`, updatedData)
+      .put(
+        `${import.meta.env.VITE_API_URL}/gymSessions/${sessionId}`,
+        updatedData
+      )
       .then((response) => {
         setSessions((prevSessions) =>
           prevSessions.map((session) =>
@@ -173,7 +174,6 @@ function GymSessionPage() {
         {sessions.map((session) => (
           <li key={session._id}>
             <strong>{session.location}</strong> - {session.typeOfWorkout}
-            {/* Show Edit and Delete buttons only if the logged in user is the creator */}
             {isLoggedIn && user && user._id === session.creator && (
               <>
                 {editingSessionId === session._id ? (

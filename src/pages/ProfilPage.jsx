@@ -3,8 +3,6 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/auth.context";
 
-const API_URL = "http://localhost:5005/api";
-
 function ProfilPage() {
   const { user } = useContext(AuthContext);
   const [sessions, setSessions] = useState([]);
@@ -17,7 +15,7 @@ function ProfilPage() {
   useEffect(() => {
     if (user) {
       axios
-        .get(`${API_URL}/gymSessions`)
+        .get(`${import.meta.env.VITE_API_URL}/gymSessions`)
         .then((response) => {
           const userSessions = response.data.filter(
             (session) => session.creator === user._id
@@ -33,7 +31,7 @@ function ProfilPage() {
   // Récupération de tous les commentaires
   useEffect(() => {
     axios
-      .get(`${API_URL}/comments`)
+      .get(`${import.meta.env.VITE_API_URL}/comments`)
       .then((response) => setComments(response.data))
       .catch((error) => console.error("Error fetching comments:", error));
   }, []);
@@ -51,7 +49,7 @@ function ProfilPage() {
     };
 
     axios
-      .post(`${API_URL}/Comment`, commentData)
+      .post(`${import.meta.env.VITE_API_URL}/Comment`, commentData)
       .then((response) => {
         setComments((prev) => [...prev, response.data]);
         setNewCommentTexts((prev) => ({ ...prev, [sessionId]: "" }));
@@ -61,7 +59,7 @@ function ProfilPage() {
 
   const handleDeleteComment = (commentId) => {
     axios
-      .delete(`${API_URL}/Comment/${commentId}`)
+      .delete(`${import.meta.env.VITE_API_URL}/Comment/${commentId}`)
       .then(() => {
         setComments((prev) =>
           prev.filter((comment) => comment._id !== commentId)
@@ -78,7 +76,7 @@ function ProfilPage() {
   const handleUpdateComment = (e, commentId) => {
     e.preventDefault();
     axios
-      .put(`${API_URL}/Comment/${commentId}`, {
+      .put(`${import.meta.env.VITE_API_URL}/Comment/${commentId}`, {
         commentContent: editingCommentText,
       })
       .then((response) => {
@@ -93,49 +91,36 @@ function ProfilPage() {
       .catch((error) => console.error("Error updating comment:", error));
   };
 
-  // Définition des listes d'options pour les menus déroulants
-  const levels = ["beginner", "intermediate", "expert"];
-  const favoriteTimes = ["morning", "afternoon", "evening"];
-  const gymSessionOptions = [
-    "Treadmill (Intervals, Incline Walking, Endurance Run)",
-    "Elliptical (Steady State, Interval Training)",
-    "Stationary Bike (Spin Class, Steady Pedal)",
-    "Rowing Machine (Interval Rowing, Continuous Endurance)",
-    "Stair Climber (Consistent Pace, HIIT)",
-    "HIIT Classes (Burpees, Jumping Jacks, Sprints)",
-    "Free Weight Training (Bench Press, Squats, Deadlifts, Overhead Press)",
-    "Machine Workouts (Leg Press, Chest Press, Lat Pulldown)",
-    "Kettlebell Workouts (Swings, Cleans, Goblet Squats)",
-    "Bodyweight Circuits (Push-ups, Pull-ups, Dips, Lunges, Planks)",
-    "TRX Suspension Training (Suspension Exercises, Core Strengthening)",
-    "Resistance Band Sessions (Band Rows, Curls, Leg Workouts)",
-    "Yoga Classes (Hatha, Vinyasa)",
-    "Pilates Classes (Core Strengthening, Stretching)",
-    "Dynamic Stretching (Movement-Based Warm-Up)",
-    "Static Stretching (Cool-Down Routines, Major Muscle Groups)",
-    "Foam Rolling/Mobility (Self-Myofascial Release, Mobility Exercises)",
-    "Stability Ball Workouts (Ball Squats, Planks, Core Drills)",
-    "BOSU Ball Training (Squats, Push-ups, Lunges)",
-    "Balance Board Exercises (Single-Leg Balance, Proprioception Drills)",
-    "Single-Leg Drills (Unilateral Strength, Stability Exercises)",
-    "Agility Ladder Drills (Quick Feet, Coordination Exercises)",
+  // Utilisation des mêmes listes d'options que sur MateFinderPage
+  const locationOptions = ["Paris", "Marseille", "Lyon", "Bordeaux", "Nice"];
+  const workoutTypeOptions = [
+    "Cardio",
+    "Strength",
+    "Flexibility",
+    "Balance",
+    "HIIT",
   ];
+  const timeOptions = ["Morning", "Afternoon", "Evening"];
+  const experienceOptions = ["Beginner", "Intermediate", "Expert"];
 
-  // États pour stocker les sélections de l'utilisateur pour le matefinder
-  const [selectedLevel, setSelectedLevel] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [selectedGymSession, setSelectedGymSession] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedWorkoutType, setSelectedWorkoutType] = useState("");
+  const [selectedAvailableTime, setSelectedAvailableTime] = useState("");
+  const [selectedExperience, setSelectedExperience] = useState("");
 
   const handleMatefinderSubmit = (e) => {
     e.preventDefault();
     console.log("Matefinder Preferences:", {
-      level: selectedLevel,
-      time: selectedTime,
-      gymSession: selectedGymSession,
+      location: selectedLocation,
+      preferredWorkoutType: selectedWorkoutType,
+      availableTime: selectedAvailableTime,
+      experienceLevel: selectedExperience,
     });
-    localStorage.setItem("level", selectedLevel);
-    localStorage.setItem("favoriteTime", selectedTime);
-    localStorage.setItem("gymSessionPreference", selectedGymSession);
+
+    localStorage.setItem("location", selectedLocation);
+    localStorage.setItem("preferredWorkoutType", selectedWorkoutType);
+    localStorage.setItem("availableTime", selectedAvailableTime);
+    localStorage.setItem("experienceLevel", selectedExperience);
     alert("Preferences saved locally!");
   };
 
@@ -226,20 +211,19 @@ function ProfilPage() {
 
       <hr />
 
-      {/* Formulaire pour les préférences matefinder */}
       <h2>Matefinder Preferences</h2>
       <form onSubmit={handleMatefinderSubmit}>
         <div style={{ marginBottom: "10px" }}>
           <label>
-            Niveau :{" "}
+            Location:{" "}
             <select
-              value={selectedLevel}
-              onChange={(e) => setSelectedLevel(e.target.value)}
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
             >
-              <option value="">-- Choisir un niveau --</option>
-              {levels.map((lvl) => (
-                <option key={lvl} value={lvl}>
-                  {lvl}
+              <option value="">-- Select Location --</option>
+              {locationOptions.map((loc) => (
+                <option key={loc} value={loc}>
+                  {loc}
                 </option>
               ))}
             </select>
@@ -247,13 +231,29 @@ function ProfilPage() {
         </div>
         <div style={{ marginBottom: "10px" }}>
           <label>
-            Moment préféré :{" "}
+            Workout Type:{" "}
             <select
-              value={selectedTime}
-              onChange={(e) => setSelectedTime(e.target.value)}
+              value={selectedWorkoutType}
+              onChange={(e) => setSelectedWorkoutType(e.target.value)}
             >
-              <option value="">-- Choisir un moment --</option>
-              {favoriteTimes.map((time) => (
+              <option value="">-- Select Workout Type --</option>
+              {workoutTypeOptions.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+        <div style={{ marginBottom: "10px" }}>
+          <label>
+            Available Time:{" "}
+            <select
+              value={selectedAvailableTime}
+              onChange={(e) => setSelectedAvailableTime(e.target.value)}
+            >
+              <option value="">-- Select Time --</option>
+              {timeOptions.map((time) => (
                 <option key={time} value={time}>
                   {time}
                 </option>
@@ -263,21 +263,21 @@ function ProfilPage() {
         </div>
         <div style={{ marginBottom: "10px" }}>
           <label>
-            Type de séance :{" "}
+            Experience Level:{" "}
             <select
-              value={selectedGymSession}
-              onChange={(e) => setSelectedGymSession(e.target.value)}
+              value={selectedExperience}
+              onChange={(e) => setSelectedExperience(e.target.value)}
             >
-              <option value="">-- Choisir une séance --</option>
-              {gymSessionOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
+              <option value="">-- Select Experience Level --</option>
+              {experienceOptions.map((exp) => (
+                <option key={exp} value={exp}>
+                  {exp}
                 </option>
               ))}
             </select>
           </label>
         </div>
-        <button type="submit">Enregistrer</button>
+        <button type="submit">Save Preferences</button>
       </form>
     </div>
   );
