@@ -1,0 +1,131 @@
+/* app.css */
+
+/* --- RESET / BASE --- */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%; /* Nécessaire pour que body puisse prendre 100% de la hauteur */
+}
+
+body {
+  min-height: 100vh; /* Assure que le dégradé couvre toute la fenêtre */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #512da8 0%, #0d47a1 100%);
+  color: #ffffff;
+}
+
+/* HEADER */
+header {
+  padding: 40px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #512da8 30%, #303f9f 90%);
+  color: #ffffff;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2.4rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.header-subtitle {
+  font-size: 1.1rem;
+  margin-top: 10px;
+  opacity: 0.9;
+}
+
+/* MAIN BANNER */
+.main-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #303f9f 0%, #1a237e 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.main-banner h2 {
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+  color: #ffca28; /* Couleur jaune vif */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.main-banner p {
+  max-width: 700px;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+/* Bouton d'appel à l'action */
+.cta-button {
+  padding: 15px 30px;
+  font-size: 1rem;
+  background-color: #ffca28;
+  color: #1a237e;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-button:hover {
+  background-color: #ffd54f;
+  transform: translateY(-3px);
+}
+
+/* SECTION CARDS */
+.section-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 50px 20px;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  margin: 20px;
+  width: 280px;
+  padding: 20px;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card h3 {
+  margin-top: 0;
+  color: #ffca28;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.card p {
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 20px;
+  background-color: #1a237e;
+  color: #ffffff;
+  opacity: 0.9;
+}
+
+footer p {
+  margin: 0;
+  font-size: 0.9rem;
+}

@@ -3,6 +3,8 @@ import React, { useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/auth.context";
 
+const API_URL = "http://localhost:5005/api";
+
 function MateFinderPage() {
   const { user } = useContext(AuthContext);
 
@@ -14,7 +16,7 @@ function MateFinderPage() {
   });
   const [results, setResults] = useState([]);
 
-  // Options identiques à celles de la ProfilPage
+  // Options identiques aux préférences sur ProfilPage
   const locationOptions = ["Paris", "Marseille", "Lyon", "Bordeaux", "Nice"];
   const workoutTypeOptions = [
     "Cardio",
@@ -33,9 +35,7 @@ function MateFinderPage() {
   const handleSearch = (e) => {
     e.preventDefault();
     axios
-      .get(`${import.meta.env.VITE_API_URL}/matefinder`, {
-        params: searchCriteria,
-      })
+      .get(`${API_URL}/matefinder`, { params: searchCriteria })
       .then((response) => {
         setResults(response.data);
       })
@@ -122,8 +122,8 @@ function MateFinderPage() {
         <ul>
           {results.map((profile) => (
             <li key={profile._id}>
-              {profile.user?.username || "Anonymous"} - {profile.location} -{" "}
-              {profile.preferredWorkoutType}
+              {profile.user?.username || profile.username || "Anonymous"} -{" "}
+              {profile.location} - {profile.preferredWorkoutType}
             </li>
           ))}
         </ul>

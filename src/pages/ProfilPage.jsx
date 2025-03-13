@@ -3,6 +3,8 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/auth.context";
 
+const API_URL = "http://localhost:5005/api";
+
 function ProfilPage() {
   const { user } = useContext(AuthContext);
   const [sessions, setSessions] = useState([]);
@@ -11,11 +13,10 @@ function ProfilPage() {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
 
-  // Récupération des sessions de l'utilisateur
   useEffect(() => {
     if (user) {
       axios
-        .get(`${import.meta.env.VITE_API_URL}/gymSessions`)
+        .get(`${API_URL}/gymSessions`)
         .then((response) => {
           const userSessions = response.data.filter(
             (session) => session.creator === user._id
@@ -28,10 +29,9 @@ function ProfilPage() {
     }
   }, [user]);
 
-  // Récupération de tous les commentaires
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/comments`)
+      .get(`${API_URL}/comments`)
       .then((response) => setComments(response.data))
       .catch((error) => console.error("Error fetching comments:", error));
   }, []);
@@ -49,7 +49,7 @@ function ProfilPage() {
     };
 
     axios
-      .post(`${import.meta.env.VITE_API_URL}/Comment`, commentData)
+      .post(`${API_URL}/Comment`, commentData)
       .then((response) => {
         setComments((prev) => [...prev, response.data]);
         setNewCommentTexts((prev) => ({ ...prev, [sessionId]: "" }));
@@ -59,7 +59,7 @@ function ProfilPage() {
 
   const handleDeleteComment = (commentId) => {
     axios
-      .delete(`${import.meta.env.VITE_API_URL}/Comment/${commentId}`)
+      .delete(`${API_URL}/Comment/${commentId}`)
       .then(() => {
         setComments((prev) =>
           prev.filter((comment) => comment._id !== commentId)
@@ -76,7 +76,7 @@ function ProfilPage() {
   const handleUpdateComment = (e, commentId) => {
     e.preventDefault();
     axios
-      .put(`${import.meta.env.VITE_API_URL}/Comment/${commentId}`, {
+      .put(`${API_URL}/Comment/${commentId}`, {
         commentContent: editingCommentText,
       })
       .then((response) => {
@@ -91,7 +91,6 @@ function ProfilPage() {
       .catch((error) => console.error("Error updating comment:", error));
   };
 
-  // Utilisation des mêmes listes d'options que sur MateFinderPage
   const locationOptions = ["Paris", "Marseille", "Lyon", "Bordeaux", "Nice"];
   const workoutTypeOptions = [
     "Cardio",
@@ -103,6 +102,7 @@ function ProfilPage() {
   const timeOptions = ["Morning", "Afternoon", "Evening"];
   const experienceOptions = ["Beginner", "Intermediate", "Expert"];
 
+  const [selectedUsername, setSelectedUsername] = useState(user.username || "");
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedWorkoutType, setSelectedWorkoutType] = useState("");
   const [selectedAvailableTime, setSelectedAvailableTime] = useState("");
@@ -110,17 +110,17 @@ function ProfilPage() {
 
   const handleMatefinderSubmit = (e) => {
     e.preventDefault();
-    console.log("Matefinder Preferences:", {
+    const matefinderProfile = {
+      username: selectedUsername,
       location: selectedLocation,
       preferredWorkoutType: selectedWorkoutType,
       availableTime: selectedAvailableTime,
       experienceLevel: selectedExperience,
-    });
-
-    localStorage.setItem("location", selectedLocation);
-    localStorage.setItem("preferredWorkoutType", selectedWorkoutType);
-    localStorage.setItem("availableTime", selectedAvailableTime);
-    localStorage.setItem("experienceLevel", selectedExperience);
+    };
+    localStorage.setItem(
+      "matefinderProfile",
+      JSON.stringify(matefinderProfile)
+    );
     alert("Preferences saved locally!");
   };
 
@@ -212,6 +212,14 @@ function ProfilPage() {
       <hr />
 
       <h2>Matefinder Preferences</h2>
+      <div style={{ marginBottom: "10px" }}>
+        <label>Your Username: </label>
+        <input
+          type="text"
+          value={selectedUsername}
+          onChange={(e) => setSelectedUsername(e.target.value)}
+        />
+      </div>
       <form onSubmit={handleMatefinderSubmit}>
         <div style={{ marginBottom: "10px" }}>
           <label>
