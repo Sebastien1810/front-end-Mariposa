@@ -1,92 +1,165 @@
-/* app.css */
-
 /* --- RESET / BASE --- */
 html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%; /* Nécessaire pour que body puisse prendre 100% de la hauteur */
+  height: 100%;
+  width: 100%;
 }
 
 body {
-  min-height: 100vh; /* Assure que le dégradé couvre toute la fenêtre */
+  min-height: 100vh;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #512da8 0%, #0d47a1 100%);
   color: #ffffff;
-}
-
-/* HEADER */
-header {
-  padding: 40px 20px;
-  text-align: center;
-  background: linear-gradient(135deg, #512da8 30%, #303f9f 90%);
-  color: #ffffff;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 2.4rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-.header-subtitle {
-  font-size: 1.1rem;
-  margin-top: 10px;
-  opacity: 0.9;
-}
-
-/* MAIN BANNER */
-.main-banner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 20px;
+}
+
+/* --- NAVBAR --- */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(135deg, #512da8 30%, #303f9f 90%);
+  padding: 15px 0;
   text-align: center;
-  background: linear-gradient(135deg, #303f9f 0%, #1a237e 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 1000;
 }
 
-.main-banner h2 {
-  font-size: 2.2rem;
-  margin-bottom: 20px;
-  color: #ffca28; /* Couleur jaune vif */
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.main-banner p {
-  max-width: 700px;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 30px;
-}
-
-/* Bouton d'appel à l'action */
-.cta-button {
-  padding: 15px 30px;
-  font-size: 1rem;
-  background-color: #ffca28;
-  color: #1a237e;
+.navbar a {
+  color: white;
   text-decoration: none;
-  border-radius: 6px;
   font-weight: bold;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  padding: 10px 20px;
+  transition: 0.3s;
 }
 
-.cta-button:hover {
-  background-color: #ffd54f;
+.navbar a:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+}
+
+/* --- AJOUTER DE L'ESPACE POUR QUE LE CONTENU NE SOIT PAS CACHÉ --- */
+.content {
+  padding-top: 80px; /* Pour ne pas cacher le contenu sous la navbar */
+  width: 100%;
+  max-width: 1100px;
+  text-align: center;
+}
+
+/* --- HOMEPAGE STYLES --- */
+.homepage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 50px 20px;
+  max-width: 900px;
+}
+
+.homepage-title {
+  font-size: 2.8rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #460858;
+  text-transform: uppercase;
+}
+
+.highlight {
+  color: #330e5e;
+}
+
+.homepage-description {
+  font-size: 1.2rem;
+  max-width: 700px;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  font-size: 1.2rem;
+}
+
+.features-list li {
+  margin: 8px 0;
+}
+
+.homepage-action {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.homepage-cta {
+  font-size: 1.4rem;
+  font-weight: bold;
+  background: #1c0d44;
+  color: #ffffff;
+  padding: 12px 25px;
+  border-radius: 8px;
+  margin-top: 20px;
+  transition: background 0.3s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.homepage-cta:hover {
+  background: #2e083a;
   transform: translateY(-3px);
 }
 
-/* SECTION CARDS */
+/* --- COMMENT SECTION --- */
+.comment-section {
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.comment-section h3 {
+  text-align: center;
+  color: #ffca28;
+}
+
+.comment-section input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.comment-section button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px 20px;
+  background: #ffca28;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  color: #1a237e;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.comment-section button:hover {
+  background: #ffd54f;
+}
+
+/* --- SECTION CARDS --- */
 .section-cards {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   padding: 50px 20px;
-  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .card {
@@ -116,16 +189,7 @@ header h1 {
   line-height: 1.4;
 }
 
-/* FOOTER */
+/* --- SUPPRIMER LE FOOTER --- */
 footer {
-  text-align: center;
-  padding: 20px;
-  background-color: #1a237e;
-  color: #ffffff;
-  opacity: 0.9;
-}
-
-footer p {
-  margin: 0;
-  font-size: 0.9rem;
+  display: none;
 }

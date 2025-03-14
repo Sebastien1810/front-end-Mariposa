@@ -13,6 +13,10 @@ function ProfilPage() {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingCommentText, setEditingCommentText] = useState("");
 
+  // Nouveau state pour les profils MateFinder trouvés
+  const [matefinderProfiles, setMatefinderProfiles] = useState([]);
+
+  // Récupération des sessions de l'utilisateur
   useEffect(() => {
     if (user) {
       axios
@@ -29,6 +33,7 @@ function ProfilPage() {
     }
   }, [user]);
 
+  // Récupération des commentaires
   useEffect(() => {
     axios
       .get(`${API_URL}/comments`)
@@ -91,37 +96,81 @@ function ProfilPage() {
       .catch((error) => console.error("Error updating comment:", error));
   };
 
+  // Options pour les menus déroulants MateFinder
   const locationOptions = ["Paris", "Marseille", "Lyon", "Bordeaux", "Nice"];
+  // Ici, on simplifie le choix du type de workout avec quelques catégories.
   const workoutTypeOptions = [
-    "Cardio",
-    "Strength",
-    "Flexibility",
-    "Balance",
-    "HIIT",
+    "Treadmill (Intervals, Incline Walking, Endurance Run)",
+    "Elliptical (Steady State, Interval Training)",
+    "Stationary Bike (Spin Class, Steady Pedal)",
+    "Rowing Machine (Interval Rowing, Continuous Endurance)",
+    "Stair Climber (Consistent Pace, HIIT)",
+    "HIIT Classes (Burpees, Jumping Jacks, Sprints)",
+    "Free Weight Training (Bench Press, Squats, Deadlifts, Overhead Press)",
+    "Machine Workouts (Leg Press, Chest Press, Lat Pulldown)",
+    "Kettlebell Workouts (Swings, Cleans, Goblet Squats)",
+    "Bodyweight Circuits (Push-ups, Pull-ups, Dips, Lunges, Planks)",
+    "TRX Suspension Training (Suspension Exercises, Core Strengthening)",
+    "Resistance Band Sessions (Band Rows, Curls, Leg Workouts)",
+    "Yoga Classes (Hatha, Vinyasa)",
+    "Pilates Classes (Core Strengthening, Stretching)",
+    "Dynamic Stretching (Movement-Based Warm-Up)",
+    "Static Stretching (Cool-Down Routines, Major Muscle Groups)",
+    "Foam Rolling/Mobility (Self-Myofascial Release, Mobility Exercises)",
+    "Stability Ball Workouts (Ball Squats, Planks, Core Drills)",
+    "BOSU Ball Training (Squats, Push-ups, Lunges)",
+    "Balance Board Exercises (Single-Leg Balance, Proprioception Drills)",
+    "Single-Leg Drills (Unilateral Strength, Stability Exercises)",
+    "Agility Ladder Drills (Quick Feet, Coordination Exercises)",
   ];
   const timeOptions = ["Morning", "Afternoon", "Evening"];
   const experienceOptions = ["Beginner", "Intermediate", "Expert"];
 
-  const [selectedUsername, setSelectedUsername] = useState(user.username || "");
+  // Modification des noms de variables pour correspondre aux champs de la BDD (firstName, workoutType, availableTime, level)
+  const [selectedFirstName, setSelectedFirstName] = useState(
+    user.username || ""
+  );
   const [selectedLocation, setSelectedLocation] = useState("");
   const [selectedWorkoutType, setSelectedWorkoutType] = useState("");
   const [selectedAvailableTime, setSelectedAvailableTime] = useState("");
-  const [selectedExperience, setSelectedExperience] = useState("");
+  const [selectedLevel, setSelectedLevel] = useState("");
 
+  // Handle submission for MateFinder preferences
   const handleMatefinderSubmit = (e) => {
     e.preventDefault();
     const matefinderProfile = {
-      username: selectedUsername,
+      firstName: selectedFirstName,
       location: selectedLocation,
-      preferredWorkoutType: selectedWorkoutType,
+      workoutType: selectedWorkoutType,
       availableTime: selectedAvailableTime,
-      experienceLevel: selectedExperience,
+      level: selectedLevel,
     };
-    localStorage.setItem(
-      "matefinderProfile",
-      JSON.stringify(matefinderProfile)
-    );
-    alert("Preferences saved locally!");
+
+    // Envoi du profil vers le back-end
+    axios
+      .post(`${API_URL}/matefinder/profile`, matefinderProfile)
+      .then((response) => {
+        console.log("MateFinder profile created:", response.data);
+        // Rechercher les profils correspondants avec les mêmes critères
+        axios
+          .get(`${API_URL}/matefinder`, {
+            params: {
+              location: selectedLocation,
+              workoutType: selectedWorkoutType,
+              availableTime: selectedAvailableTime,
+              level: selectedLevel,
+            },
+          })
+          .then((res) => {
+            setMatefinderProfiles(res.data);
+          })
+          .catch((err) =>
+            console.error("Error fetching matching MateFinder profiles:", err)
+          );
+      })
+      .catch((error) =>
+        console.error("Error creating MateFinder profile:", error)
+      );
   };
 
   return (
@@ -211,13 +260,13 @@ function ProfilPage() {
 
       <hr />
 
-      <h2>Matefinder Preferences</h2>
+      <h2>MateFinder Preferences</h2>
       <div style={{ marginBottom: "10px" }}>
-        <label>Your Username: </label>
+        <label>Your Username (First Name): </label>
         <input
           type="text"
-          value={selectedUsername}
-          onChange={(e) => setSelectedUsername(e.target.value)}
+          value={selectedFirstName}
+          onChange={(e) => setSelectedFirstName(e.target.value)}
         />
       </div>
       <form onSubmit={handleMatefinderSubmit}>
@@ -227,6 +276,7 @@ function ProfilPage() {
             <select
               value={selectedLocation}
               onChange={(e) => setSelectedLocation(e.target.value)}
+              required
             >
               <option value="">-- Select Location --</option>
               {locationOptions.map((loc) => (
@@ -243,6 +293,7 @@ function ProfilPage() {
             <select
               value={selectedWorkoutType}
               onChange={(e) => setSelectedWorkoutType(e.target.value)}
+              required
             >
               <option value="">-- Select Workout Type --</option>
               {workoutTypeOptions.map((type) => (
@@ -259,6 +310,7 @@ function ProfilPage() {
             <select
               value={selectedAvailableTime}
               onChange={(e) => setSelectedAvailableTime(e.target.value)}
+              required
             >
               <option value="">-- Select Time --</option>
               {timeOptions.map((time) => (
@@ -273,8 +325,9 @@ function ProfilPage() {
           <label>
             Experience Level:{" "}
             <select
-              value={selectedExperience}
-              onChange={(e) => setSelectedExperience(e.target.value)}
+              value={selectedLevel}
+              onChange={(e) => setSelectedLevel(e.target.value)}
+              required
             >
               <option value="">-- Select Experience Level --</option>
               {experienceOptions.map((exp) => (
@@ -285,8 +338,31 @@ function ProfilPage() {
             </select>
           </label>
         </div>
-        <button type="submit">Save Preferences</button>
+        <button type="submit">Save Preferences & Find Matches</button>
       </form>
+
+      {/* Affichage des profils MateFinder correspondants */}
+      <hr />
+      <h3>Matching MateFinder Profiles</h3>
+      {matefinderProfiles.length === 0 ? (
+        <p>No matching profiles found.</p>
+      ) : (
+        matefinderProfiles.map((profile) => (
+          <div
+            key={profile._id}
+            style={{
+              border: "1px solid #ccc",
+              margin: "10px",
+              padding: "10px",
+            }}
+          >
+            <p>
+              <strong>{profile.firstName}</strong> - {profile.location} -{" "}
+              {profile.workoutType} - {profile.availableTime} - {profile.level}
+            </p>
+          </div>
+        ))
+      )}
     </div>
   );
 }
