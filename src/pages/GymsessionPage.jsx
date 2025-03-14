@@ -52,7 +52,7 @@ function GymSessionPage() {
   // Load existing sessions when the component mounts
   useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_API_URL}/gymSessions`)
+      .get(`${import.meta.env.VITE_API_URL}/api/gymSessions`)
       .then((response) => setSessions(response.data))
       .catch((error) => console.error("Error fetching sessions:", error));
   }, []);
@@ -69,13 +69,13 @@ function GymSessionPage() {
     };
 
     axios
-      .post(`${import.meta.env.VITE_API_URL}/gymSessions`, newSession)
+      .post(`${import.meta.env.VITE_API_URL}/api/gymSessions`, newSession)
       .then(() => {
         setLocation("");
         setTypeOfWorkout("");
         setFavoriteTime("");
         // Refresh the sessions list from the backend
-        return axios.get(`${API_URL}/gymSessions`);
+        return axios.get(`${API_URL}/api/gymSessions`);
       })
       .then((response) => setSessions(response.data))
       .catch((error) => console.error("Error creating session:", error));
@@ -83,7 +83,7 @@ function GymSessionPage() {
 
   const handleDelete = (sessionId) => {
     axios
-      .delete(`${import.meta.env.VITE_API_URL}/gymSessions/${sessionId}`)
+      .delete(`${import.meta.env.VITE_API_URL}/api/gymSessions/${sessionId}`)
       .then(() => {
         // Update state by removing the deleted session
         setSessions(sessions.filter((session) => session._id !== sessionId));
@@ -108,7 +108,7 @@ function GymSessionPage() {
 
     axios
       .put(
-        `${import.meta.env.VITE_API_URL}/gymSessions/${sessionId}`,
+        `${import.meta.env.VITE_API_URL}/api/gymSessions/${sessionId}`,
         updatedData
       )
       .then((response) => {
