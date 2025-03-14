@@ -75,7 +75,7 @@ function GymSessionPage() {
         setTypeOfWorkout("");
         setFavoriteTime("");
         // Refresh the sessions list from the backend
-        return axios.get(`${API_URL}/api/gymSessions`);
+        return axios.get(`${import.meta.env.VITE_API_URL}/api/gymSessions`);
       })
       .then((response) => setSessions(response.data))
       .catch((error) => console.error("Error creating session:", error));
