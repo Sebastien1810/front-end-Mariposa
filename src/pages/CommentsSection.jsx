@@ -46,8 +46,12 @@ function CommentsSection() {
 
     axios
       .post(`${import.meta.env.VITE_API_URL}/api/Comment`, commentData)
+      .then(() => {
+        // Rafraîchit la liste des commentaires après l'ajout
+        return axios.get(`${import.meta.env.VITE_API_URL}/api/comments`);
+      })
       .then((response) => {
-        setComments((prev) => [...prev, response.data]);
+        setComments(response.data);
         setNewCommentTexts((prev) => ({ ...prev, [sessionId]: "" }));
       })
       .catch((error) => console.error("Error creating comment:", error));
