@@ -10,7 +10,7 @@ body {
 body {
   min-height: 100vh;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #512da8 0%, #0d47a1 100%);
+  background: linear-gradient(135deg, #281231 0%, #6d5f70 100%);
   color: #ffffff;
   display: flex;
   flex-direction: column;
@@ -23,7 +23,7 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  background: linear-gradient(135deg, #512da8 30%, #303f9f 90%);
+  background: linear-gradient(135deg, #281231 30%, #6d5f70 90%);
   padding: 15px 0;
   text-align: center;
   z-index: 1000;
