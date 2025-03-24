@@ -5,7 +5,7 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { Box } from "@mui/material/Box";
+import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 
 function GymSessionPage() {
