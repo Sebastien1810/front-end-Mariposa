@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
 import React from "react";
+import Button from "@mui/material";
 
 function LoginPage(props) {
   const [email, setEmail] = useState("");
@@ -53,7 +54,18 @@ function LoginPage(props) {
           onChange={handlePassword}
         />
 
-        <button type="submit">Login</button>
+        <Button
+          variant="outlined"
+          type="submit"
+          sx={{
+            color: "#fff",
+            borderColor: "#000",
+            bgcolor: "transparent",
+            "&:hover": { bgcolor: "#000", borderColor: "#000" },
+          }}
+        >
+          Login
+        </Button>
       </form>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
 
