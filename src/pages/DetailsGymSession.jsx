@@ -1,10 +1,11 @@
 import React from "react";
 
+
 function DetailsGymSession() {
   return (
     <div>
       <h1>just follow the instruction of your Gymsession!</h1>
-      <p>
+      <p style={{ color: `#C7D9DD`,font-family: "cursive"}}>
         🏃 Cardio Workouts (1-Hour Sessions) Treadmill (Intervals, Incline
         Walking, Endurance Run) ⏳ Duration: 60 min Warm-up (10 min) Walk at a
         moderate pace (5 min) Light jog to increase heart rate (5 min) Main
