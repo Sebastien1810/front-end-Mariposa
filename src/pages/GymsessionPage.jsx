@@ -161,7 +161,7 @@ function GymSessionPage() {
         </FormControl>
 
         <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-          <Button variant="contained" type="submit">
+          <Button variant="outlined" type="submit">
             Create Session
           </Button>
         </Stack>
