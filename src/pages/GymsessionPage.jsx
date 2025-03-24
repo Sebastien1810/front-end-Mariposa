@@ -160,7 +160,7 @@ function GymSessionPage() {
           </Select>
         </FormControl>
 
-        <Stack direction="row" spacing={2} sx={{ bgcolor:"#695798" mt: 2 }}>
+        <Stack direction="row" spacing={2} sx={{ bgcolor: "#695798", mt: 2 }}>
           <Button variant="outlined" type="submit">
             Create Session
           </Button>
