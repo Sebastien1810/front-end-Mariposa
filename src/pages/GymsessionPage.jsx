@@ -117,10 +117,29 @@ function GymSessionPage() {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             required
+            InputLabelProps={{ style: { color: "#fff" } }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "#fff" },
+                "&:hover fieldset": { borderColor: "#fff" },
+                "&.Mui-focused fieldset": { borderColor: "#fff" },
+              },
+              "& .MuiInputBase-input": { color: "#fff" },
+            }}
           />
         </Box>
 
-        <FormControl fullWidth variant="outlined" margin="normal" required>
+        <FormControl
+          fullWidth
+          variant="outlined"
+          margin="normal"
+          required
+          sx={{
+            "& .MuiInputLabel-root": { color: "#fff" },
+            "& .MuiOutlinedInput-notchedOutline": { borderColor: "#fff" },
+            "& .MuiSelect-root": { color: "#fff" },
+          }}
+        >
           <InputLabel id="type-select-label">Type of Workout</InputLabel>
           <Select
             labelId="type-select-label"
@@ -140,7 +159,17 @@ function GymSessionPage() {
           </Select>
         </FormControl>
 
-        <FormControl fullWidth variant="outlined" margin="normal" required>
+        <FormControl
+          fullWidth
+          variant="outlined"
+          margin="normal"
+          required
+          sx={{
+            "& .MuiInputLabel-root": { color: "#fff" },
+            "& .MuiOutlinedInput-notchedOutline": { borderColor: "#fff" },
+            "& .MuiSelect-root": { color: "#fff" },
+          }}
+        >
           <InputLabel id="time-select-label">Favorite Time</InputLabel>
           <Select
             labelId="time-select-label"
