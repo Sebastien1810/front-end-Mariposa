@@ -160,8 +160,20 @@ function GymSessionPage() {
           </Select>
         </FormControl>
 
-        <Stack direction="row" spacing={2} sx={{ bgcolor: "#695798", mt: 2 }}>
-          <Button variant="outlined" type="submit">
+        <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+          <Button
+            variant="outlined"
+            type="submit"
+            sx={{
+              color: "#fff", // texte blanc
+              borderColor: "#000", // bordure noire
+              bgcolor: "transparent", // fond transparent par défaut
+              "&:hover": {
+                bgcolor: "#000", // fond noir au survol
+                borderColor: "#000", // bordure noire au survol
+              },
+            }}
+          >
             Create Session
           </Button>
         </Stack>
