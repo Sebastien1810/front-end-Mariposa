@@ -5,6 +5,8 @@ import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import { Box } from "@mui/material/Box";
+import { TextField } from "@mui/material";
 
 function GymSessionPage() {
   const [location, setLocation] = useState("");
@@ -105,15 +107,17 @@ function GymSessionPage() {
     <div>
       <h1>Create a New Gym Session</h1>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Location:</label>
-          <input
-            type="text"
+        <Box sx={{ m: 1, width: "100%" }}>
+          <TextField
+            fullWidth
+            id="location-input"
+            label="Location"
+            variant="outlined"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             required
           />
-        </div>
+        </Box>
 
         <FormControl fullWidth variant="outlined" margin="normal" required>
           <InputLabel id="type-select-label">Type of Workout</InputLabel>
