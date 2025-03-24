@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/auth.context";
 import React from "react";
-import Button from "@mui/material";
+import Button from "@mui/material/Button";
 
 function LoginPage(props) {
   const [email, setEmail] = useState("");
