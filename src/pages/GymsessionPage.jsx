@@ -7,9 +7,8 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
-import Stack from "@mui/material";
-import Button from "@mui/material";
-
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 function GymSessionPage() {
   const [location, setLocation] = useState("");
   const [typeOfWorkout, setTypeOfWorkout] = useState("");
