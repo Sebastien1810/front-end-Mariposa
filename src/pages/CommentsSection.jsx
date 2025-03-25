@@ -20,7 +20,6 @@ function CommentsSection() {
       .get(`${import.meta.env.VITE_API_URL}/api/gymSessions`)
       .then((res) => setSessions(res.data))
       .catch(console.error);
-
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/comments`)
       .then((res) => setComments(res.data))
@@ -107,15 +106,12 @@ function CommentsSection() {
                     </form>
                   ) : (
                     <>
-                      <span>{comment.commentContent}</span>
+                      <span>{comment.content}</span>
                       {currentUser?._id === comment.createdBy?._id && (
                         <Stack direction="row" spacing={1}>
                           <Button
                             onClick={() =>
-                              startEditingComment(
-                                comment._id,
-                                comment.commentContent
-                              )
+                              startEditingComment(comment._id, comment.content)
                             }
                           >
                             Edit
