@@ -1,3 +1,4 @@
+// pages/CommentsSection.jsx
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/auth.context";
@@ -26,13 +27,12 @@ function CommentsSection() {
       .catch(console.error);
   }, []);
 
-  const handleNewCommentChange = (id, value) =>
-    setNewCommentTexts((prev) => ({ ...prev, [id]: value }));
+  const handleNewCommentChange = (id, text) =>
+    setNewCommentTexts((prev) => ({ ...prev, [id]: text }));
 
   const handleCreateComment = async (e, sessionId) => {
     e.preventDefault();
     if (!currentUser) return;
-
     await axios.post(`${import.meta.env.VITE_API_URL}/api/Comment`, {
       content: newCommentTexts[sessionId],
       gymSession: sessionId,
@@ -45,11 +45,35 @@ function CommentsSection() {
     setNewCommentTexts((prev) => ({ ...prev, [sessionId]: "" }));
   };
 
+  const handleDeleteComment = async (id) => {
+    await axios.delete(`${import.meta.env.VITE_API_URL}/api/Comment/${id}`);
+    setComments((prev) => prev.filter((c) => c._id !== id));
+  };
+
+  const startEditingComment = (id, content) => {
+    setEditingCommentId(id);
+    setEditingCommentText(content);
+  };
+
+  const handleUpdateComment = async (e, id) => {
+    e.preventDefault();
+    await axios.put(`${import.meta.env.VITE_API_URL}/api/Comment/${id}`, {
+      content: editingCommentText,
+    });
+    const { data } = await axios.get(
+      `${import.meta.env.VITE_API_URL}/api/comments`
+    );
+    setComments(data);
+    setEditingCommentId(null);
+    setEditingCommentText("");
+  };
+
   return (
     <Box sx={{ p: 2 }}>
       <Typography variant="h4" sx={{ color: "#fff", mb: 3 }}>
         Sessions & Comments
       </Typography>
+
       {sessions.map((session) => (
         <Box key={session._id} sx={{ border: "1px solid #fff", p: 2, mb: 4 }}>
           <Typography variant="h6" sx={{ color: "#fff" }}>
@@ -63,9 +87,47 @@ function CommentsSection() {
                 <Box
                   component="li"
                   key={comment._id}
-                  sx={{ mb: 1, color: "#fff" }}
+                  sx={{ mb: 2, color: "#fff" }}
                 >
-                  {comment.commentContent}
+                  {editingCommentId === comment._id ? (
+                    <form onSubmit={(e) => handleUpdateComment(e, comment._id)}>
+                      <TextField
+                        fullWidth
+                        value={editingCommentText}
+                        onChange={(e) => setEditingCommentText(e.target.value)}
+                        required
+                        sx={{ mb: 1 }}
+                      />
+                      <Stack direction="row" spacing={1}>
+                        <Button type="submit">Save</Button>
+                        <Button onClick={() => setEditingCommentId(null)}>
+                          Cancel
+                        </Button>
+                      </Stack>
+                    </form>
+                  ) : (
+                    <>
+                      <Typography>{comment.content}</Typography>
+                      {currentUser?._id === comment.createdBy?._id && (
+                        <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
+                          <Button
+                            size="small"
+                            onClick={() =>
+                              startEditingComment(comment._id, comment.content)
+                            }
+                          >
+                            Edit
+                          </Button>
+                          <Button
+                            size="small"
+                            onClick={() => handleDeleteComment(comment._id)}
+                          >
+                            Delete
+                          </Button>
+                        </Stack>
+                      )}
+                    </>
+                  )}
                 </Box>
               ))}
           </Box>
@@ -84,12 +146,9 @@ function CommentsSection() {
                     handleNewCommentChange(session._id, e.target.value)
                   }
                   required
-                  InputLabelProps={{ style: { color: "#fff" } }}
                   sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "#fff" },
-                      "&:hover fieldset": { borderColor: "#fff" },
-                      "&.Mui-focused fieldset": { borderColor: "#fff" },
+                    "& .MuiOutlinedInput-root fieldset": {
+                      borderColor: "#fff",
                     },
                     "& .MuiInputBase-input": { color: "#fff" },
                   }}
