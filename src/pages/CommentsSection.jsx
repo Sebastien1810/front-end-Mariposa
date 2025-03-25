@@ -20,16 +20,14 @@ function CommentsSection() {
       .get(`${import.meta.env.VITE_API_URL}/api/gymSessions`)
       .then((res) => setSessions(res.data))
       .catch(console.error);
-
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/comments`)
       .then((res) => setComments(res.data))
       .catch(console.error);
   }, []);
 
-  const handleNewCommentChange = (sessionId, text) => {
+  const handleNewCommentChange = (sessionId, text) =>
     setNewCommentTexts((prev) => ({ ...prev, [sessionId]: text }));
-  };
 
   const handleCreateComment = (e, sessionId) => {
     e.preventDefault();
@@ -69,7 +67,7 @@ function CommentsSection() {
     e.preventDefault();
     axios
       .put(`${import.meta.env.VITE_API_URL}/api/Comment/${id}`, {
-        commentContent: editingCommentText,
+        content: editingCommentText,
       })
       .then((res) => {
         setComments((prev) => prev.map((c) => (c._id === id ? res.data : c)));
@@ -112,7 +110,7 @@ function CommentsSection() {
                   ) : (
                     <>
                       <span>{comment.commentContent}</span>
-                      {currentUser?._id === comment.createdBy && (
+                      {currentUser?._id === comment.createdBy?._id && (
                         <Stack direction="row" spacing={1}>
                           <Button
                             onClick={() =>
