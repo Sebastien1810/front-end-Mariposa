@@ -1,12 +1,11 @@
 import React from "react";
 
-
 function DetailsGymSession() {
   return (
     <div>
       <h1>just follow the instruction of your Gymsession!</h1>
-      <p style={{ color: `#C7D9DD`,font-family: "cursive"}}>
-        🏃 Cardio Workouts (1-Hour Sessions) Treadmill (Intervals, Incline
+      <div style={{ color: "#C7D9DD", fontFamily: "cursive" }}>
+        � Cardio Workouts (1-Hour Sessions) Treadmill (Intervals, Incline
         Walking, Endurance Run) ⏳ Duration: 60 min Warm-up (10 min) Walk at a
         moderate pace (5 min) Light jog to increase heart rate (5 min) Main
         Workout (40 min) Intervals: 1 min sprint → 2 min jog (repeat 8-10 times)
@@ -86,8 +85,9 @@ function DetailsGymSession() {
           12 reps Balance Board Holds: 30 sec Agility Ladder Drills: Quick feet
           Cool-down (10 min) Stretch and deep breathing
         </p>
-      </p>
+      </div>
     </div>
   );
 }
+
 export default DetailsGymSession;
