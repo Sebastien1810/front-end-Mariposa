@@ -124,6 +124,18 @@ function Navbar() {
             Profil
           </Button>
         </Link>
+        <Link to="/detailsGymsession" style={{ textDecoration: "none" }}>
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: "black",
+              color: "white",
+              "&:hover": { bgcolor: "#333" },
+            }}
+          >
+            DetailsGymsession
+          </Button>
+        </Link>
       </Stack>
     </Box>
   );
