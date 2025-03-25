@@ -107,13 +107,16 @@ function CommentsSection() {
                     </form>
                   ) : (
                     <>
-                      <Typography>{comment.content}</Typography>
+                      <Typography>{comment.commentContent}</Typography>
                       {currentUser?._id === comment.createdBy?._id && (
                         <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
                           <Button
                             size="small"
                             onClick={() =>
-                              startEditingComment(comment._id, comment.content)
+                              startEditingComment(
+                                comment._id,
+                                comment.commentContent
+                              )
                             }
                           >
                             Edit
