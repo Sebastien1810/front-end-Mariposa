@@ -1,46 +1,32 @@
 // pages/DetailsGymSession.jsx
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-
-const sessionsData = [
-  {
-    title: "Treadmill (Intervals, Incline Walking, Endurance Run)",
-    details: `⏳ Duration: 60 min
-Warm‑up (10 min): Moderate walk → light jog
-Main (40 min): 1min sprint → 2min jog × 8–10, 12% incline walk (10 min), steady run (10–15 min)
-Cool‑down (10 min): Slow walk + stretch`,
-  },
-  {
-    title: "Elliptical (Steady State, Interval Training)",
-    details: `⏳ Duration: 60 min
-Warm‑up (10 min): Low resistance pedaling
-Main (40 min): Steady state (15 min), intervals 1min high→2min low ×10, endurance (10 min)
-Cool‑down (10 min): Light pedaling + stretch`,
-  },
-  {
-    title: "Stationary Bike (Spin Class, Steady Pedal)",
-    details: `⏳ Duration: 60 min
-Warm‑up (10 min): Light pedaling
-Main (40 min): Spin intervals 30s sprint→1min moderate ×12, hill climbs (10 min), steady RPM (15 min)
-Cool‑down (10 min): Slow pedaling + stretch`,
-  },
-  // Ajoute les autres séances ici...
-];
+import Box from "@mui/material/Box";
 
 export default function DetailsGymSession() {
+  const [sessions, setSessions] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_API_URL}/api/gymSessions`)
+      .then((res) => setSessions(res.data))
+      .catch(console.error);
+  }, []);
+
   return (
-    <div style={{ margin: 20 }}>
+    <Box sx={{ p: 2 }}>
       <Typography variant="h4" sx={{ color: "#fff", mb: 3 }}>
-        Choose a Gym Session
+        All Gym Sessions
       </Typography>
 
-      {sessionsData.map((session, i) => (
+      {sessions.map((session) => (
         <Accordion
-          key={i}
+          key={session._id}
           sx={{ bgcolor: "transparent", border: "1px solid #555", mb: 2 }}
         >
           <AccordionSummary
@@ -48,9 +34,10 @@ export default function DetailsGymSession() {
             sx={{ borderBottom: "1px solid #444" }}
           >
             <Typography sx={{ color: "#fff", fontWeight: 600 }}>
-              {session.title}
+              {session.location}
             </Typography>
           </AccordionSummary>
+
           <AccordionDetails>
             <Typography
               sx={{
@@ -59,11 +46,13 @@ export default function DetailsGymSession() {
                 fontFamily: "cursive",
               }}
             >
-              {session.details}
+              <strong>Workout:</strong> {session.typeOfWorkout}
+              {"\n"}
+              <strong>Preferred Time:</strong> {session.favoriteTimeforWorkout}
             </Typography>
           </AccordionDetails>
         </Accordion>
       ))}
-    </div>
+    </Box>
   );
 }
