@@ -19,12 +19,10 @@ function CommentsSection() {
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/gymSessions`)
-      .then((res) => setSessions(res.data))
-      .catch(console.error);
+      .then((res) => setSessions(res.data));
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/comments`)
-      .then((res) => setComments(res.data))
-      .catch(console.error);
+      .then((res) => setComments(res.data));
   }, []);
 
   const handleNewCommentChange = (id, text) =>
@@ -58,7 +56,7 @@ function CommentsSection() {
   const handleUpdateComment = async (e, id) => {
     e.preventDefault();
     await axios.put(`${import.meta.env.VITE_API_URL}/api/Comment/${id}`, {
-      content: editingCommentText,
+      commentContent: editingCommentText,
     });
     const { data } = await axios.get(
       `${import.meta.env.VITE_API_URL}/api/comments`
@@ -99,8 +97,13 @@ function CommentsSection() {
                         sx={{ mb: 1 }}
                       />
                       <Stack direction="row" spacing={1}>
-                        <Button type="submit">Save</Button>
-                        <Button onClick={() => setEditingCommentId(null)}>
+                        <Button type="submit" sx={{ color: "#fff" }}>
+                          Save
+                        </Button>
+                        <Button
+                          onClick={() => setEditingCommentId(null)}
+                          sx={{ color: "#fff" }}
+                        >
                           Cancel
                         </Button>
                       </Stack>
@@ -108,7 +111,7 @@ function CommentsSection() {
                   ) : (
                     <>
                       <Typography>{comment.commentContent}</Typography>
-                      {currentUser?._id === comment.user && (
+                      {currentUser?._id === comment.createdBy?._id && (
                         <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
                           <Button
                             size="small"
@@ -118,12 +121,14 @@ function CommentsSection() {
                                 comment.commentContent
                               )
                             }
+                            sx={{ color: "#fff" }}
                           >
                             Edit
                           </Button>
                           <Button
                             size="small"
                             onClick={() => handleDeleteComment(comment._id)}
+                            sx={{ color: "#fff" }}
                           >
                             Delete
                           </Button>
