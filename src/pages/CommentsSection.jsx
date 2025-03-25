@@ -159,16 +159,41 @@ function CommentsSection() {
               ))}
           </ul>
           <form onSubmit={(e) => handleCreateComment(e, session._id)}>
-            <input
-              type="text"
-              placeholder="Add a comment"
-              value={newCommentTexts[session._id] || ""}
-              onChange={(e) =>
-                handleNewCommentChange(session._id, e.target.value)
-              }
-              required
-            />
-            <button type="submit">Post Comment</button>
+            <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+              <TextField
+                fullWidth
+                placeholder="Add a comment"
+                value={newCommentTexts[session._id] || ""}
+                onChange={(e) =>
+                  handleNewCommentChange(session._id, e.target.value)
+                }
+                required
+                variant="outlined"
+                InputLabelProps={{ style: { color: "#fff" } }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    "& fieldset": { borderColor: "#fff" },
+                    "&:hover fieldset": { borderColor: "#fff" },
+                    "&.Mui-focused fieldset": { borderColor: "#fff" },
+                  },
+                  "& .MuiInputBase-input": { color: "#fff" },
+                  mr: 2,
+                }}
+              />
+
+              <Button
+                variant="outlined"
+                type="submit"
+                sx={{
+                  color: "#fff",
+                  borderColor: "#000",
+                  bgcolor: "transparent",
+                  "&:hover": { bgcolor: "#000", borderColor: "#000" },
+                }}
+              >
+                Post Comment
+              </Button>
+            </Box>
           </form>
         </div>
       ))}
