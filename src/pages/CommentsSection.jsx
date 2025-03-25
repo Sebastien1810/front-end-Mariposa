@@ -108,7 +108,7 @@ function CommentsSection() {
                   ) : (
                     <>
                       <Typography>{comment.commentContent}</Typography>
-                      {currentUser?._id === comment.createdBy?._id && (
+                      {currentUser?._id === comment.user && (
                         <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
                           <Button
                             size="small"
