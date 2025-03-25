@@ -2,10 +2,13 @@
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/auth.context";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 
 function CommentsSection() {
   const { user: currentUser } = useContext(AuthContext);
-
   const [sessions, setSessions] = useState([]);
   const [comments, setComments] = useState([]);
   const [newCommentTexts, setNewCommentTexts] = useState({});
@@ -15,15 +18,13 @@ function CommentsSection() {
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/gymSessions`)
-      .then((response) => setSessions(response.data))
-      .catch((error) => console.error("Error fetching sessions:", error));
-  }, []);
+      .then((res) => setSessions(res.data))
+      .catch(console.error);
 
-  useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/comments`)
-      .then((response) => setComments(response.data))
-      .catch((error) => console.error("Error fetching comments:", error));
+      .then((res) => setComments(res.data))
+      .catch(console.error);
   }, []);
 
   const handleNewCommentChange = (sessionId, text) => {
@@ -32,11 +33,7 @@ function CommentsSection() {
 
   const handleCreateComment = (e, sessionId) => {
     e.preventDefault();
-
-    if (!currentUser) {
-      console.error("User not authenticated");
-      return;
-    }
+    if (!currentUser) return;
 
     const commentData = {
       content: newCommentTexts[sessionId],
@@ -46,97 +43,78 @@ function CommentsSection() {
 
     axios
       .post(`${import.meta.env.VITE_API_URL}/api/Comment`, commentData)
-      .then(() => {
-        // Rafraîchit la liste des commentaires après l'ajout
-        return axios.get(`${import.meta.env.VITE_API_URL}/api/comments`);
-      })
-      .then((response) => {
-        setComments(response.data);
+      .then(() => axios.get(`${import.meta.env.VITE_API_URL}/api/comments`))
+      .then((res) => {
+        setComments(res.data);
         setNewCommentTexts((prev) => ({ ...prev, [sessionId]: "" }));
       })
-      .catch((error) => console.error("Error creating comment:", error));
+      .catch(console.error);
   };
 
   const handleDeleteComment = (commentId) => {
     axios
       .delete(`${import.meta.env.VITE_API_URL}/api/Comment/${commentId}`)
-      .then(() => {
-        setComments((prev) =>
-          prev.filter((comment) => comment._id !== commentId)
-        );
-      })
-      .catch((error) => console.error("Error deleting comment:", error));
+      .then(() =>
+        setComments((prev) => prev.filter((c) => c._id !== commentId))
+      )
+      .catch(console.error);
   };
 
-  const startEditingComment = (commentId, currentContent) => {
-    setEditingCommentId(commentId);
-    setEditingCommentText(currentContent);
+  const startEditingComment = (id, content) => {
+    setEditingCommentId(id);
+    setEditingCommentText(content);
   };
 
-  const handleUpdateComment = (e, commentId) => {
+  const handleUpdateComment = (e, id) => {
     e.preventDefault();
     axios
-      .put(`${import.meta.env.VITE_API_URL}/api/Comment/${commentId}`, {
+      .put(`${import.meta.env.VITE_API_URL}/api/Comment/${id}`, {
         commentContent: editingCommentText,
       })
-      .then((response) => {
-        setComments((prev) =>
-          prev.map((comment) =>
-            comment._id === commentId ? response.data : comment
-          )
-        );
+      .then((res) => {
+        setComments((prev) => prev.map((c) => (c._id === id ? res.data : c)));
         setEditingCommentId(null);
         setEditingCommentText("");
       })
-      .catch((error) => console.error("Error updating comment:", error));
+      .catch(console.error);
   };
 
   return (
     <div>
       <h2>All Sessions and Their Comments</h2>
       {sessions.map((session) => (
-        <div
-          key={session._id}
-          style={{
-            border: "1px solid #ccc",
-            margin: "10px",
-            padding: "10px",
-          }}
-        >
+        <Box key={session._id} sx={{ border: "1px solid #ccc", m: 1, p: 2 }}>
           <h3>
-            {session.location} - {session.typeOfWorkout}
+            {session.location} — {session.typeOfWorkout}
           </h3>
           <h4>Comments:</h4>
           <ul>
             {comments
-              .filter(
-                (comment) =>
-                  comment.gymSession && comment.gymSession._id === session._id
-              )
+              .filter((c) => c.gymSession?._id === session._id)
               .map((comment) => (
                 <li key={comment._id}>
                   {editingCommentId === comment._id ? (
                     <form onSubmit={(e) => handleUpdateComment(e, comment._id)}>
-                      <input
-                        type="text"
+                      <TextField
+                        fullWidth
                         value={editingCommentText}
                         onChange={(e) => setEditingCommentText(e.target.value)}
                         required
+                        sx={{ mb: 1 }}
                       />
-                      <button type="submit">Save</button>
-                      <button
-                        type="button"
-                        onClick={() => setEditingCommentId(null)}
-                      >
-                        Cancel
-                      </button>
+                      <Stack direction="row" spacing={1}>
+                        <Button type="submit">Save</Button>
+                        <Button onClick={() => setEditingCommentId(null)}>
+                          Cancel
+                        </Button>
+                      </Stack>
                     </form>
                   ) : (
                     <>
                       <span>{comment.commentContent}</span>
-                      {currentUser && currentUser._id === comment.user && (
-                        <>
-                          <button
+                      {currentUser?._id === comment.createdBy && (
+                        <Stack direction="row" spacing={1}>
+                          <Button
                             onClick={() =>
                               startEditingComment(
                                 comment._id,
@@ -145,57 +123,39 @@ function CommentsSection() {
                             }
                           >
                             Edit
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() => handleDeleteComment(comment._id)}
                           >
                             Delete
-                          </button>
-                        </>
+                          </Button>
+                        </Stack>
                       )}
                     </>
                   )}
                 </li>
               ))}
           </ul>
-          <form onSubmit={(e) => handleCreateComment(e, session._id)}>
-            <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
-              <TextField
-                fullWidth
-                placeholder="Add a comment"
-                value={newCommentTexts[session._id] || ""}
-                onChange={(e) =>
-                  handleNewCommentChange(session._id, e.target.value)
-                }
-                required
-                variant="outlined"
-                InputLabelProps={{ style: { color: "#fff" } }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": { borderColor: "#fff" },
-                    "&:hover fieldset": { borderColor: "#fff" },
-                    "&.Mui-focused fieldset": { borderColor: "#fff" },
-                  },
-                  "& .MuiInputBase-input": { color: "#fff" },
-                  mr: 2,
-                }}
-              />
 
-              <Button
-                variant="outlined"
-                type="submit"
-                sx={{
-                  color: "#fff",
-                  borderColor: "#000",
-                  bgcolor: "transparent",
-                  "&:hover": { bgcolor: "#000", borderColor: "#000" },
-                }}
-              >
-                Post Comment
-              </Button>
-            </Box>
-          </form>
-        </div>
+          {currentUser && (
+            <form onSubmit={(e) => handleCreateComment(e, session._id)}>
+              <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+                <TextField
+                  fullWidth
+                  placeholder="Add a comment"
+                  value={newCommentTexts[session._id] || ""}
+                  onChange={(e) =>
+                    handleNewCommentChange(session._id, e.target.value)
+                  }
+                  required
+                />
+                <Button variant="outlined" type="submit" sx={{ ml: 2 }}>
+                  Post Comment
+                </Button>
+              </Box>
+            </form>
+          )}
+        </Box>
       ))}
     </div>
   );
