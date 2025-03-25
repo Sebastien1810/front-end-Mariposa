@@ -1,3 +1,4 @@
+// components/Navbar.jsx
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Box from "@mui/material/Box";
@@ -9,72 +10,119 @@ function Navbar() {
   const { isLoggedIn, logOutUser } = useContext(AuthContext);
 
   return (
-    <Box
-      component="nav"
-      sx={{
-        bgcolor: "black", // Fond noir
-        p: 2, // Padding global
-      }}
-    >
+    <Box sx={{ bgcolor: "transparent", p: 2 }}>
       <Stack
         direction="row"
-        spacing={2} // Espace horizontal entre boutons
-        sx={{
-          justifyContent: "center", // Centre horizontalement
-          alignItems: "center", // Centre verticalement
-        }}
+        spacing={3}
+        sx={{ width: "100%", justifyContent: "space-evenly" }}
       >
         <Link to="/" style={{ textDecoration: "none" }}>
-          <Button sx={{ color: "#fff", bgcolor: "black" }}>Home</Button>
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: "black",
+              color: "white",
+              "&:hover": { bgcolor: "#333" },
+            }}
+          >
+            Home
+          </Button>
         </Link>
 
-        {isLoggedIn && (
+        {isLoggedIn ? (
           <>
             <Button
               onClick={logOutUser}
-              sx={{ color: "#fff", bgcolor: "black" }}
+              variant="contained"
+              sx={{
+                bgcolor: "black",
+                color: "white",
+                "&:hover": { bgcolor: "#333" },
+              }}
             >
               Logout
             </Button>
 
             <Link to="/gymsession" style={{ textDecoration: "none" }}>
-              <Button sx={{ color: "#fff", bgcolor: "black" }}>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "black",
+                  color: "white",
+                  "&:hover": { bgcolor: "#333" },
+                }}
+              >
                 Gymsession
               </Button>
             </Link>
 
             <Link to="/CommentPage" style={{ textDecoration: "none" }}>
-              <Button sx={{ color: "#fff", bgcolor: "black" }}>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "black",
+                  color: "white",
+                  "&:hover": { bgcolor: "#333" },
+                }}
+              >
                 Comment Section
               </Button>
             </Link>
 
             <Link to="/matefinder" style={{ textDecoration: "none" }}>
-              <Button sx={{ color: "#fff", bgcolor: "black" }}>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "black",
+                  color: "white",
+                  "&:hover": { bgcolor: "#333" },
+                }}
+              >
                 Matefinder
               </Button>
             </Link>
           </>
-        )}
-
-        {!isLoggedIn && (
+        ) : (
           <>
             <Link to="/signup" style={{ textDecoration: "none" }}>
-              <Button sx={{ color: "#fff", bgcolor: "black" }}>
-                Sign up page
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "black",
+                  color: "white",
+                  "&:hover": { bgcolor: "#333" },
+                }}
+              >
+                Sign Up
               </Button>
             </Link>
 
             <Link to="/login" style={{ textDecoration: "none" }}>
-              <Button sx={{ color: "#fff", bgcolor: "black" }}>
-                Login page
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "black",
+                  color: "white",
+                  "&:hover": { bgcolor: "#333" },
+                }}
+              >
+                Login
               </Button>
             </Link>
           </>
         )}
 
         <Link to="/profil" style={{ textDecoration: "none" }}>
-          <Button sx={{ color: "#fff", bgcolor: "black" }}>Profil</Button>
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: "black",
+              color: "white",
+              "&:hover": { bgcolor: "#333" },
+            }}
+          >
+            Profil
+          </Button>
         </Link>
       </Stack>
     </Box>
