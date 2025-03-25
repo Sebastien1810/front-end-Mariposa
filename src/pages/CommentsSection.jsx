@@ -20,6 +20,7 @@ function CommentsSection() {
       .get(`${import.meta.env.VITE_API_URL}/api/gymSessions`)
       .then((res) => setSessions(res.data))
       .catch(console.error);
+
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/comments`)
       .then((res) => setComments(res.data))
@@ -33,14 +34,12 @@ function CommentsSection() {
     e.preventDefault();
     if (!currentUser) return;
 
-    const commentData = {
-      content: newCommentTexts[sessionId],
-      gymSession: sessionId,
-      createdBy: currentUser._id,
-    };
-
     axios
-      .post(`${import.meta.env.VITE_API_URL}/api/Comment`, commentData)
+      .post(`${import.meta.env.VITE_API_URL}/api/Comment`, {
+        content: newCommentTexts[sessionId],
+        gymSession: sessionId,
+        createdBy: currentUser._id,
+      })
       .then(() => axios.get(`${import.meta.env.VITE_API_URL}/api/comments`))
       .then((res) => {
         setComments(res.data);
@@ -49,14 +48,13 @@ function CommentsSection() {
       .catch(console.error);
   };
 
-  const handleDeleteComment = (commentId) => {
+  const handleDeleteComment = (commentId) =>
     axios
       .delete(`${import.meta.env.VITE_API_URL}/api/Comment/${commentId}`)
       .then(() =>
         setComments((prev) => prev.filter((c) => c._id !== commentId))
       )
       .catch(console.error);
-  };
 
   const startEditingComment = (id, content) => {
     setEditingCommentId(id);
