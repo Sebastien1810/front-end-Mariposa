@@ -68,7 +68,7 @@ function App() {
           }
         />
         <Route
-          path="/DetailGymsessionPage"
+          path="/DetailsGymsession"
           element={
             <IsPrivate>
               <DetailsGymSession />
