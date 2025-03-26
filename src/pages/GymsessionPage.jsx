@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+
 function GymSessionPage() {
   const [location, setLocation] = useState("");
   const [typeOfWorkout, setTypeOfWorkout] = useState("");
@@ -18,6 +19,7 @@ function GymSessionPage() {
   const [editLocation, setEditLocation] = useState("");
   const [editTypeOfWorkout, setEditTypeOfWorkout] = useState("");
   const [editFavoriteTime, setEditFavoriteTime] = useState("");
+
   const { user, isLoggedIn } = useContext(AuthContext);
 
   const workoutOptions = [
@@ -43,8 +45,8 @@ function GymSessionPage() {
     "Balance Board Exercises (Single-Leg Balance, Proprioception Drills)",
     "Single-Leg Drills (Unilateral Strength, Stability Exercises)",
     "Agility Ladder Drills (Quick Feet, Coordination Exercises)",
-    /* mes differentes options de workout */
   ];
+
   const timeOptions = ["morning", "afternoon", "evening"];
 
   useEffect(() => {
@@ -62,6 +64,7 @@ function GymSessionPage() {
       favoriteTimeforWorkout: favoriteTime,
       creator: user?._id,
     };
+
     axios
       .post(`${import.meta.env.VITE_API_URL}/api/gymSessions`, newSession)
       .then(() => {
@@ -77,7 +80,7 @@ function GymSessionPage() {
   const handleDelete = (id) => {
     axios
       .delete(`${import.meta.env.VITE_API_URL}/api/gymSessions/${id}`)
-      .then(() => setSessions(sessions.filter((s) => s._id !== id)))
+      .then(() => setSessions((prev) => prev.filter((s) => s._id !== id)))
       .catch(console.error);
   };
 
@@ -95,10 +98,11 @@ function GymSessionPage() {
       typeOfWorkout: editTypeOfWorkout,
       favoriteTimeforWorkout: editFavoriteTime,
     };
+
     axios
       .put(`${import.meta.env.VITE_API_URL}/api/gymSessions/${id}`, updatedData)
       .then((res) => {
-        setSessions(sessions.map((s) => (s._id === id ? res.data : s)));
+        setSessions((prev) => prev.map((s) => (s._id === id ? res.data : s)));
         setEditingSessionId(null);
       })
       .catch(console.error);
@@ -107,6 +111,8 @@ function GymSessionPage() {
   return (
     <div>
       <h1>Create a New Gym Session</h1>
+
+      {/* FORMULAIRE DE CREATION */}
       <form onSubmit={handleSubmit}>
         <Box sx={{ m: 1, width: "100%" }}>
           <TextField
@@ -194,12 +200,12 @@ function GymSessionPage() {
             variant="outlined"
             type="submit"
             sx={{
-              color: "#fff", // texte blanc
-              borderColor: "#000", // bordure noire
-              bgcolor: "transparent", // fond transparent par défaut
+              color: "#fff",
+              borderColor: "#000",
+              bgcolor: "transparent",
               "&:hover": {
-                bgcolor: "#000", // fond noir au survol
-                borderColor: "#000", // bordure noire au survol
+                bgcolor: "#000",
+                borderColor: "#000",
               },
             }}
           >
@@ -213,88 +219,114 @@ function GymSessionPage() {
         {sessions.map((session) => (
           <li key={session._id}>
             <strong>{session.location}</strong> - {session.typeOfWorkout}
-            {isLoggedIn &&
-              user?._id === session.creator &&
-              (editingSessionId === session._id ? (
-                <form onSubmit={(e) => handleEditSubmit(e, session._id)}>
-                  <div>
-                    <label>Location:</label>
-                    <input
-                      type="text"
-                      value={editLocation}
-                      onChange={(e) => setEditLocation(e.target.value)}
+            {isLoggedIn && user?._id === session.creator && (
+              <>
+                {editingSessionId === session._id ? (
+                  // FORMULAIRE D'EDITION
+                  <form onSubmit={(e) => handleEditSubmit(e, session._id)}>
+                    <div>
+                      <label>Location:</label>
+                      <input
+                        type="text"
+                        value={editLocation}
+                        onChange={(e) => setEditLocation(e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <FormControl
+                      fullWidth
+                      variant="outlined"
+                      margin="normal"
                       required
-                    />
-                  </div>
-
-                  <FormControl
-                    fullWidth
-                    variant="outlined"
-                    margin="normal"
-                    required
-                  >
-                    <InputLabel id="edit-type-select-label">
-                      Type of Workout
-                    </InputLabel>
-                    <Select
-                      labelId="edit-type-select-label"
-                      value={editTypeOfWorkout}
-                      onChange={(e) => setEditTypeOfWorkout(e.target.value)}
-                      label="Type of Workout"
                     >
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      {workoutOptions.map((o, i) => (
-                        <MenuItem key={i} value={o}>
-                          {o}
+                      <InputLabel id="edit-type-select-label">
+                        Type of Workout
+                      </InputLabel>
+                      <Select
+                        labelId="edit-type-select-label"
+                        value={editTypeOfWorkout}
+                        onChange={(e) => setEditTypeOfWorkout(e.target.value)}
+                        label="Type of Workout"
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
                         </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                        {workoutOptions.map((o, i) => (
+                          <MenuItem key={i} value={o}>
+                            {o}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
 
-                  <FormControl
-                    fullWidth
-                    variant="outlined"
-                    margin="normal"
-                    required
-                  >
-                    <InputLabel id="edit-time-select-label">
-                      Favorite Time
-                    </InputLabel>
-                    <Select
-                      labelId="edit-time-select-label"
-                      value={editFavoriteTime}
-                      onChange={(e) => setEditFavoriteTime(e.target.value)}
-                      label="Favorite Time"
+                    <FormControl
+                      fullWidth
+                      variant="outlined"
+                      margin="normal"
+                      required
                     >
-                      <MenuItem value="">
-                        <em>None</em>
-                      </MenuItem>
-                      {timeOptions.map((o, i) => (
-                        <MenuItem key={i} value={o}>
-                          {o}
+                      <InputLabel id="edit-time-select-label">
+                        Favorite Time
+                      </InputLabel>
+                      <Select
+                        labelId="edit-time-select-label"
+                        value={editFavoriteTime}
+                        onChange={(e) => setEditFavoriteTime(e.target.value)}
+                        label="Favorite Time"
+                      >
+                        <MenuItem value="">
+                          <em>None</em>
                         </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                        {timeOptions.map((o, i) => (
+                          <MenuItem key={i} value={o}>
+                            {o}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
 
-                  <button type="submit">Save</button>
-                  <button
-                    type="button"
-                    onClick={() => setEditingSessionId(null)}
+                    <button type="submit">Save</button>
+                    <button
+                      type="button"
+                      onClick={() => setEditingSessionId(null)}
+                    >
+                      Cancel
+                    </button>
+                  </form>
+                ) : (
+                  // BOUTONS EDIT / DELETE (MUI stylisés)
+                  <Stack
+                    direction="row"
+                    spacing={1}
+                    sx={{ display: "inline-flex", ml: 2 }}
                   >
-                    Cancel
-                  </button>
-                </form>
-              ) : (
-                <>
-                  <button onClick={() => startEditing(session)}>Edit</button>
-                  <button onClick={() => handleDelete(session._id)}>
-                    Delete
-                  </button>
-                </>
-              ))}
+                    <Button
+                      variant="contained"
+                      onClick={() => startEditing(session)}
+                      sx={{
+                        bgcolor: "grey.800",
+                        color: "#fff",
+                        "&:hover": { bgcolor: "grey.700" },
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => handleDelete(session._id)}
+                      sx={{
+                        bgcolor: "grey.800",
+                        color: "#fff",
+                        "&:hover": { bgcolor: "grey.700" },
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </Stack>
+                )}
+              </>
+            )}
           </li>
         ))}
       </ul>
