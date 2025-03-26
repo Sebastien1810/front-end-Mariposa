@@ -81,6 +81,32 @@ function Navbar() {
                 Matefinder
               </Button>
             </Link>
+
+            <Link to="/profil" style={{ textDecoration: "none" }}>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "black",
+                  color: "white",
+                  "&:hover": { bgcolor: "#333" },
+                }}
+              >
+                Profil
+              </Button>
+            </Link>
+
+            <Link to="/detailsGymsession" style={{ textDecoration: "none" }}>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "black",
+                  color: "white",
+                  "&:hover": { bgcolor: "#333" },
+                }}
+              >
+                DetailsGymsession
+              </Button>
+            </Link>
           </>
         ) : (
           <>
@@ -111,31 +137,6 @@ function Navbar() {
             </Link>
           </>
         )}
-
-        <Link to="/profil" style={{ textDecoration: "none" }}>
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: "black",
-              color: "white",
-              "&:hover": { bgcolor: "#333" },
-            }}
-          >
-            Profil
-          </Button>
-        </Link>
-        <Link to="/detailsGymsession" style={{ textDecoration: "none" }}>
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: "black",
-              color: "white",
-              "&:hover": { bgcolor: "#333" },
-            }}
-          >
-            DetailsGymsession
-          </Button>
-        </Link>
       </Stack>
     </Box>
   );
