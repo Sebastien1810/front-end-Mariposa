@@ -46,9 +46,9 @@ function GymSessionPage() {
     "Single-Leg Drills (Unilateral Strength, Stability Exercises)",
     "Agility Ladder Drills (Quick Feet, Coordination Exercises)",
   ];
-
   const timeOptions = ["morning", "afternoon", "evening"];
 
+  // Charger les sessions existantes
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/api/gymSessions`)
@@ -56,6 +56,7 @@ function GymSessionPage() {
       .catch(console.error);
   }, []);
 
+  // Créer une nouvelle session
   const handleSubmit = (e) => {
     e.preventDefault();
     const newSession = {
@@ -77,6 +78,7 @@ function GymSessionPage() {
       .catch(console.error);
   };
 
+  // Supprimer une session
   const handleDelete = (id) => {
     axios
       .delete(`${import.meta.env.VITE_API_URL}/api/gymSessions/${id}`)
@@ -84,6 +86,7 @@ function GymSessionPage() {
       .catch(console.error);
   };
 
+  // Passer en mode édition
   const startEditing = (session) => {
     setEditingSessionId(session._id);
     setEditLocation(session.location);
@@ -91,6 +94,7 @@ function GymSessionPage() {
     setEditFavoriteTime(session.favoriteTimeforWorkout);
   };
 
+  // Sauvegarder la session éditée
   const handleEditSubmit = (e, id) => {
     e.preventDefault();
     const updatedData = {
@@ -222,17 +226,27 @@ function GymSessionPage() {
             {isLoggedIn && user?._id === session.creator && (
               <>
                 {editingSessionId === session._id ? (
-                  // FORMULAIRE D'EDITION
+                  // --- FORMULAIRE D'EDITION ---
                   <form onSubmit={(e) => handleEditSubmit(e, session._id)}>
-                    <div>
-                      <label>Location:</label>
-                      <input
-                        type="text"
+                    <Box sx={{ mt: 2 }}>
+                      {/* TEXTFIELD POUR LOCATION */}
+                      <TextField
+                        fullWidth
+                        label="Location"
+                        variant="outlined"
                         value={editLocation}
                         onChange={(e) => setEditLocation(e.target.value)}
                         required
+                        sx={{
+                          "& .MuiOutlinedInput-root": {
+                            "& fieldset": { borderColor: "#fff" },
+                            "&:hover fieldset": { borderColor: "#fff" },
+                            "&.Mui-focused fieldset": { borderColor: "#fff" },
+                          },
+                          "& .MuiInputBase-input": { color: "#fff" },
+                        }}
                       />
-                    </div>
+                    </Box>
 
                     <FormControl
                       fullWidth
@@ -286,16 +300,35 @@ function GymSessionPage() {
                       </Select>
                     </FormControl>
 
-                    <button type="submit">Save</button>
-                    <button
-                      type="button"
-                      onClick={() => setEditingSessionId(null)}
-                    >
-                      Cancel
-                    </button>
+                    {/* BOUTONS SAVE / CANCEL */}
+                    <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{
+                          bgcolor: "grey.800",
+                          color: "#fff",
+                          "&:hover": { bgcolor: "grey.700" },
+                        }}
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="contained"
+                        sx={{
+                          bgcolor: "grey.800",
+                          color: "#fff",
+                          "&:hover": { bgcolor: "grey.700" },
+                        }}
+                        onClick={() => setEditingSessionId(null)}
+                      >
+                        Cancel
+                      </Button>
+                    </Stack>
                   </form>
                 ) : (
-                  // BOUTONS EDIT / DELETE (MUI stylisés)
+                  // --- BOUTONS EDIT / DELETE ---
                   <Stack
                     direction="row"
                     spacing={1}
