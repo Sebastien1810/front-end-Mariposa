@@ -1,4 +1,3 @@
-// pages/DetailsGymSession.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Accordion from "@mui/material/Accordion";

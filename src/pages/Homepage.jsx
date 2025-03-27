@@ -1,4 +1,4 @@
-import "../App.css"; // Assurez-vous que ce fichier contient les styles nécessaires
+import "../App.css";
 import { Link } from "react-router-dom"; // Import de Link pour la navigation
 
 function Homepage() {
